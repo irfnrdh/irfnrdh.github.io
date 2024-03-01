@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zoom Text with Hammer.js</title>
+<style>
+  body {
+    font-size: 16px;
+  }
+</style>
+</head>
+<body>
+
+<p id="zoom-text">Ini adalah contoh teks yang dapat di-zoom.</p>
+
+<script src="path/to/hammer.js"></script>
+<script>
+  // Inisialisasi Hammer.js dengan elemen target
+  const hammertime = new Hammer(document.getElementById('zoom-text'));
+
+  // Daftar event untuk zoom
+  hammertime.get('pinch').set({ enable: true });
+
+  // Tangani event zoom
+  hammertime.on('pinch', function(ev) {
+    let scale = ev.scale;
+    let fontSize = 16 * scale; // Default font size multiplied by the scale factor
+    document.getElementById('zoom-text').style.fontSize = fontSize + 'px';
+  });
+</script>
+
+</body>
+</html>
