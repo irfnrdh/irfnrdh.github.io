@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Pinch Zoom Only Inside Container</title>
+<style>
+  #container {
+    width: 80vw; /* Lebar kontainer 80% dari lebar viewport */
+    height: 80vh; /* Tinggi kontainer 80% dari tinggi viewport */
+    overflow: hidden; /* Hindari teks yang terlalu lebar */
+    border: 1px solid black; /* Untuk tujuan demonstrasi */
+  }
+  
+  .zoomable-text {
+    font-size: 16px; /* Ukuran huruf awal */
+    transform-origin: 0 0; /* Tetapkan titik transformasi ke kiri atas */
+  }
+</style>
+</head>
+<body>
+
+<div id="container">
+  <p class="zoomable-text" id="zoom-text">Ini adalah contoh teks yang dapat di-zoom.</p>
+</div>
+
+<script>
+  const container = document.getElementById('container');
+  const zoomableText = document.getElementById('zoom-text');
+
+  let initialFontSize = parseFloat(window.getComputedStyle(zoomableText).fontSize);
+  let lastScale = 1;
+
+  container.addEventListener('touchmove', function(e) {
+    if (e.touches.length >= 2) {
+      e.preventDefault(); // Mencegah perilaku bawaan pinch zoom
+    }
+  });
+
+  container.addEventListener('gesturestart', function(e) {
+    e.preventDefault(); // Mencegah perilaku bawaan pinch zoom
+  });
+
+  container.addEventListener('gesturechange', function(e) {
+    let scale = e.scale / lastScale;
+    lastScale = e.scale;
+    
+    let fontSize = initialFontSize * scale;
+    zoomableText.style.fontSize = fontSize + 'px';
+  });
+
+  container.addEventListener('gestureend', function(e) {
+    lastScale = 1;
+  });
+</script>
+
+</body>
+</html>
