@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Locked Zoom within Container on Android</title>
+<style>
+  .container {
+    width: 80vw; /* Lebar kontainer 80% dari lebar viewport */
+    height: 80vh; /* Tinggi kontainer 80% dari tinggi viewport */
+    overflow: scroll; /* Aktifkan scrolling di dalam kontainer */
+    border: 1px solid black; /* Untuk tujuan demonstrasi */
+  }
+  
+  .zoomable-text {
+    font-size: 16px; /* Ukuran huruf awal */
+    transform-origin: 0 0; /* Tetapkan titik transformasi ke kiri atas */
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <p class="zoomable-text" id="zoom-text">Ini adalah contoh teks yang dapat di-zoom.</p>
+</div>
+
+<script>
+  const container = document.querySelector('.container');
+  const zoomableText = document.querySelector('.zoomable-text');
+
+  let initialFontSize = parseFloat(window.getComputedStyle(zoomableText).fontSize);
+
+  container.addEventListener('gesturechange', function(event) {
+    let scale = event.scale;
+    let fontSize = initialFontSize * scale;
+    zoomableText.style.fontSize = fontSize + 'px';
+  });
+</script>
+
+</body>
+</html>
