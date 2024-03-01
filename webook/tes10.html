@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Pinch Zoom Content Inside Container with Hammer.js</title>
+<style>
+  #container {
+    width: 80vw; /* Lebar kontainer 80% dari lebar viewport */
+    height: 80vh; /* Tinggi kontainer 80% dari tinggi viewport */
+    overflow: hidden; /* Hindari konten yang terlalu lebar */
+    border: 1px solid black; /* Untuk tujuan demonstrasi */
+    position: relative;
+  }
+  
+  .zoomable-content {
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+  
+  #zoom-value {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+  }
+</style>
+</head>
+<body>
+
+<div id="container">
+  <img class="zoomable-content" src="https://images.unsplash.com/photo-1665667332739-d33305807f07?q=80&w=2041&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Contoh Gambar">
+  <video class="zoomable-content" controls>
+    <source src="https://file-examples.com/wp-content/storage/2017/04/file_example_MP4_1920_18MG.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
+  <p class="zoomable-content">Ini adalah contoh teks yang dapat di-zoom.</p>
+  <p id="zoom-value">Zoom: 1x</p>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/hammer.js/2.0.8/hammer.min.js"></script>
+<script>
+  const container = document.getElementById('container');
+  const zoomableContent = document.querySelectorAll('.zoomable-content');
+  const zoomValue = document.getElementById('zoom-value');
+
+  let lastScale = 1;
+
+  const hammertime = new Hammer(container);
+
+  hammertime.get('pinch').set({ enable: true });
+
+  hammertime.on('pinch', function(e) {
+    let scale = e.scale * lastScale;
+    
+    zoomableContent.forEach(function(element) {
+      element.style.transform = 'scale(' + scale + ')';
+    });
+    
+    zoomValue.textContent = 'Zoom: ' + scale.toFixed(2) + 'x';
+  });
+
+  hammertime.on('pinchend', function(e) {
+    lastScale *= e.scale;
+  });
+</script>
+
+</body>
+</html>
