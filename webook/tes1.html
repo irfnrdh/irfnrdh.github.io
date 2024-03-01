@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zoom Text</title>
+<style>
+  body {
+    font-size: 16px;
+  }
+</style>
+</head>
+<body>
+
+<p id="zoom-text">Ini adalah contoh teks yang dapat di-zoom.</p>
+
+<script>
+  function handleZoom() {
+    let scale = window.innerWidth / window.outerWidth;
+    let fontSize = 16 * scale; // Default font size multiplied by the scale factor
+    document.getElementById('zoom-text').style.fontSize = fontSize + 'px';
+  }
+
+  // Panggil handleZoom saat halaman dimuat dan ketika ukuran layar berubah
+  handleZoom();
+  window.addEventListener('resize', handleZoom);
+</script>
+
+</body>
+</html>
