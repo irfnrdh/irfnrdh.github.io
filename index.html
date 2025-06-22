@@ -45,35 +45,52 @@
             transform: translateY(-1px);
         }
         
+        .dark .project-card:hover {
+            border-color: #4b5563;
+        }
+        
         .lang-toggle {
             transition: all 0.2s ease;
         }
         
         .lang-toggle.active {
             background: #f3f4f6;
+            color: #111827;
         }
         
         .dark .lang-toggle.active {
             background: #374151;
+            color: #f9fafb;
         }
         
+        /* Desktop: tidak terlalu wide, tapi juga tidak terlalu sempit */
+        .desktop-container {
+            max-width: 1200px;
+        }
+        
+        /* Mobile: full width dengan padding yang cukup */
         @media (max-width: 768px) {
-            .text-left-mobile {
-                text-align: left;
+            .mobile-padding {
+                padding-left: 1rem;
+                padding-right: 1rem;
             }
             
-            .px-mobile {
-                padding-left: 1.5rem;
-                padding-right: 1.5rem;
+            .mobile-full {
+                max-width: none;
             }
+        }
+        
+        /* Animasi untuk dark mode transition */
+        .dark-transition {
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
         }
     </style>
 </head>
-<body class="bg-white text-gray-900 dark:bg-gray-900 dark:text-gray-100 transition-colors duration-200" id="app">
+<body class="bg-white text-gray-900 dark:bg-gray-900 dark:text-gray-100 dark-transition" id="app">
     
     <!-- Theme and Language Toggle -->
-    <div class="fixed top-8 right-8 z-50 flex gap-2">
-        <button @click="toggleDarkMode()" class="p-2 rounded-full bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">
+    <div class="fixed top-4 right-4 md:top-6 md:right-6 z-50 flex gap-2">
+        <button @click="toggleDarkMode()" class="p-2 rounded-full bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 dark-transition shadow-lg">
             <svg v-if="darkMode" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                 <path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clip-rule="evenodd" />
             </svg>
@@ -82,7 +99,7 @@
             </svg>
         </button>
         
-        <div class="flex bg-gray-100 dark:bg-gray-700 rounded-full p-1">
+        <div class="flex bg-gray-100 dark:bg-gray-700 rounded-full p-1 shadow-lg">
             <button @click="currentLang = 'id'" 
                     :class="['lang-toggle px-3 py-1 rounded-full text-sm font-medium', 
                              currentLang === 'id' ? 'active' : '']">
@@ -100,31 +117,31 @@
     <div class="min-h-screen">
         
         <!-- Hero Section -->
-        <section class="pt-32 pb-24 px-8">
-            <div class="max-w-4xl mx-auto md:text-center text-left-mobile fade-in px-mobile">
-                <h1 class="text-4xl md:text-6xl font-light mb-8 leading-tight">
+        <section class="pt-24 md:pt-32 pb-16 md:pb-24">
+            <div class="desktop-container mobile-full mx-auto px-4 md:px-8 mobile-padding fade-in">
+                <h1 class="text-4xl md:text-5xl lg:text-6xl font-light mb-6 md:mb-8 leading-tight">
                     {{ content[currentLang].greeting }}
                 </h1>
-                <p class="text-xl md:text-2xl text-gray-600 dark:text-gray-400 font-light leading-relaxed max-w-3xl mx-auto md:mx-0">
+                <p class="text-lg md:text-xl lg:text-2xl text-gray-600 dark:text-gray-400 font-light leading-relaxed max-w-4xl">
                     {{ content[currentLang].tagline }}
                 </p>
             </div>
         </section>
 
         <!-- Current Work -->
-        <section class="py-16 px-8">
-            <div class="max-w-4xl mx-auto px-mobile">
-                <h2 class="text-2xl md:text-3xl font-light mb-12 md:text-center text-left-mobile">
+        <section class="py-12 md:py-16">
+            <div class="desktop-container mobile-full mx-auto px-4 md:px-8 mobile-padding">
+                <h2 class="text-2xl md:text-3xl font-light mb-8 md:mb-12">
                     {{ content[currentLang].currentTitle }}
                 </h2>
-                <div class="grid md:grid-cols-3 gap-8">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
                     <div v-for="current in content[currentLang].currentWork" 
                          :key="current.type"
-                         class="text-left p-6 hover-lift">
+                         class="p-4 md:p-6 hover-lift dark-transition">
                         <div class="text-gray-500 dark:text-gray-400 text-sm uppercase tracking-wider mb-2">
                             {{ current.type }}
                         </div>
-                        <div class="font-medium">
+                        <div class="font-medium text-gray-900 dark:text-gray-100">
                             {{ current.project }}
                         </div>
                     </div>
@@ -133,35 +150,35 @@
         </section>
 
         <!-- Main Projects -->
-        <section class="py-16 px-8 bg-gray-50 dark:bg-gray-800">
-            <div class="max-w-6xl mx-auto px-mobile">
-                <h2 class="text-2xl md:text-3xl font-light mb-16 md:text-center text-left-mobile">
+        <section class="py-12 md:py-16 bg-gray-50 dark:bg-gray-800 dark-transition">
+            <div class="desktop-container mobile-full mx-auto px-4 md:px-8 mobile-padding">
+                <h2 class="text-2xl md:text-3xl font-light mb-12 md:mb-16">
                     {{ content[currentLang].projectsTitle }}
                 </h2>
                 
                 <!-- Tools & Solutions -->
-                <div class="mb-16">
-                    <h3 class="text-lg font-medium mb-8 text-gray-700 dark:text-gray-300">
+                <div class="mb-12 md:mb-16">
+                    <h3 class="text-lg md:text-xl font-medium mb-6 md:mb-8 text-gray-700 dark:text-gray-300">
                         {{ content[currentLang].toolsTitle }}
                     </h3>
-                    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
                         <div v-for="project in content[currentLang].tools" 
                              :key="project.name"
-                             class="project-card bg-white dark:bg-gray-700 p-6 rounded-lg">
-                            <h4 class="font-medium mb-2">{{ project.name }}</h4>
+                             class="project-card bg-white dark:bg-gray-700 p-4 md:p-6 rounded-lg dark-transition">
+                            <h4 class="font-medium mb-2 text-gray-900 dark:text-gray-100">{{ project.name }}</h4>
                             <p class="text-gray-600 dark:text-gray-300 text-sm mb-4 leading-relaxed">
                                 {{ project.description }}
                             </p>
-                            <div class="flex space-x-4 text-sm">
+                            <div class="flex flex-wrap gap-4 text-sm">
                                 <a :href="project.github" 
                                    target="_blank"
-                                   class="text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
+                                   class="text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white dark-transition">
                                     GitHub →
                                 </a>
                                 <a v-if="project.demo" 
                                    :href="project.demo"
                                    target="_blank" 
-                                   class="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors">
+                                   class="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 dark-transition">
                                     Demo →
                                 </a>
                             </div>
@@ -170,19 +187,19 @@
                 </div>
 
                 <!-- Open Source -->
-                <div class="mb-16">
-                    <h3 class="text-lg font-medium mb-8 text-gray-700 dark:text-gray-300">
+                <div class="mb-12 md:mb-16">
+                    <h3 class="text-lg md:text-xl font-medium mb-6 md:mb-8 text-gray-700 dark:text-gray-300">
                         {{ content[currentLang].openSourceTitle }}
                     </h3>
-                    <div class="grid md:grid-cols-2 gap-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                         <div v-for="project in content[currentLang].openSource" 
                              :key="project.name"
-                             class="project-card bg-white dark:bg-gray-700 p-6 rounded-lg">
-                            <h4 class="font-medium mb-2">{{ project.name }}</h4>
+                             class="project-card bg-white dark:bg-gray-700 p-4 md:p-6 rounded-lg dark-transition">
+                            <h4 class="font-medium mb-2 text-gray-900 dark:text-gray-100">{{ project.name }}</h4>
                             <p class="text-gray-600 dark:text-gray-300 text-sm mb-4 leading-relaxed">
                                 {{ project.description }}
                             </p>
-                            <div class="flex justify-between items-center">
+                            <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
                                 <div class="flex flex-wrap gap-2 text-xs text-gray-500 dark:text-gray-400">
                                     <span v-for="tech in project.tech" :key="tech" class="px-2 py-1 bg-gray-100 dark:bg-gray-600 rounded">
                                         {{ tech }}
@@ -190,7 +207,7 @@
                                 </div>
                                 <a :href="project.github" 
                                    target="_blank"
-                                   class="text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors text-sm">
+                                   class="text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white dark-transition text-sm self-start sm:self-auto">
                                     GitHub →
                                 </a>
                             </div>
@@ -199,18 +216,18 @@
                 </div>
 
                 <!-- Creative Work -->
-                <div class="mb-16">
-                    <h3 class="text-lg font-medium mb-8 text-gray-700 dark:text-gray-300">
+                <div class="mb-12 md:mb-16">
+                    <h3 class="text-lg md:text-xl font-medium mb-6 md:mb-8 text-gray-700 dark:text-gray-300">
                         {{ content[currentLang].creativeTitle }}
                     </h3>
-                    <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
                         <div v-for="work in content[currentLang].creative" 
                              :key="work.name"
-                             class="project-card bg-white dark:bg-gray-700 p-4 rounded-lg text-center">
-                            <div class="h-32 bg-gray-100 dark:bg-gray-600 rounded mb-4 flex items-center justify-center text-gray-400 dark:text-gray-300">
+                             class="project-card bg-white dark:bg-gray-700 p-3 md:p-4 rounded-lg text-center dark-transition">
+                            <div class="h-24 md:h-32 bg-gray-100 dark:bg-gray-600 rounded mb-3 md:mb-4 flex items-center justify-center text-gray-400 dark:text-gray-300 text-sm">
                                 {{ work.type }}
                             </div>
-                            <h4 class="font-medium text-sm mb-1">{{ work.name }}</h4>
+                            <h4 class="font-medium text-sm mb-1 text-gray-900 dark:text-gray-100">{{ work.name }}</h4>
                             <p class="text-xs text-gray-600 dark:text-gray-400">{{ work.year }}</p>
                         </div>
                     </div>
@@ -218,18 +235,18 @@
 
                 <!-- Writing -->
                 <div>
-                    <h3 class="text-lg font-medium mb-8 text-gray-700 dark:text-gray-300">
+                    <h3 class="text-lg md:text-xl font-medium mb-6 md:mb-8 text-gray-700 dark:text-gray-300">
                         {{ content[currentLang].writingTitle }}
                     </h3>
                     <div class="space-y-4">
                         <div v-for="article in content[currentLang].writing" 
                              :key="article.title"
-                             class="flex flex-col sm:flex-row justify-between items-start sm:items-center py-4 border-b border-gray-200 dark:border-gray-700 hover-lift">
-                            <div class="mb-2 sm:mb-0">
-                                <h4 class="font-medium mb-1">{{ article.title }}</h4>
+                             class="flex flex-col sm:flex-row sm:justify-between sm:items-start py-4 border-b border-gray-200 dark:border-gray-700 hover-lift dark-transition gap-2">
+                            <div class="flex-1">
+                                <h4 class="font-medium mb-1 text-gray-900 dark:text-gray-100">{{ article.title }}</h4>
                                 <p class="text-sm text-gray-600 dark:text-gray-400">{{ article.platform }}</p>
                             </div>
-                            <div class="text-sm text-gray-500 dark:text-gray-400">
+                            <div class="text-sm text-gray-500 dark:text-gray-400 sm:ml-4 flex-shrink-0">
                                 {{ article.date }}
                             </div>
                         </div>
@@ -239,27 +256,27 @@
         </section>
 
         <!-- Contact -->
-        <section class="py-24 px-8">
-            <div class="max-w-4xl mx-auto md:text-center text-left-mobile px-mobile">
-                <h2 class="text-2xl md:text-3xl font-light mb-8">
+        <section class="py-16 md:py-24">
+            <div class="desktop-container mobile-full mx-auto px-4 md:px-8 mobile-padding">
+                <h2 class="text-2xl md:text-3xl font-light mb-6 md:mb-8">
                     {{ content[currentLang].contactTitle }}
                 </h2>
-                <p class="text-gray-600 dark:text-gray-400 mb-12 max-w-2xl mx-auto md:mx-0 leading-relaxed">
+                <p class="text-gray-600 dark:text-gray-400 mb-8 md:mb-12 max-w-3xl leading-relaxed">
                     {{ content[currentLang].contactDesc }}
                 </p>
-                <div class="flex flex-col sm:flex-row justify-start md:justify-center items-start sm:items-center space-y-4 sm:space-y-0 sm:space-x-8">
+                <div class="flex flex-col sm:flex-row sm:items-center space-y-4 sm:space-y-0 sm:space-x-8">
                     <a href="mailto:irfannurdiah@gmail.com" 
-                       class="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors font-medium">
+                       class="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 dark-transition font-medium">
                         irfannurdiah@gmail.com
                     </a>
                     <a href="https://github.com/irfnrdh" 
                        target="_blank"
-                       class="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
+                       class="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white dark-transition">
                         GitHub →
                     </a>
                     <a href="https://linkedin.com/in/irfannurdiah" 
                        target="_blank"
-                       class="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
+                       class="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white dark-transition">
                         LinkedIn →
                     </a>
                 </div>
@@ -267,8 +284,8 @@
         </section>
 
         <!-- Footer -->
-        <footer class="py-12 px-8 border-t border-gray-200 dark:border-gray-700">
-            <div class="max-w-4xl mx-auto text-center text-gray-500 dark:text-gray-400 text-sm">
+        <footer class="py-8 md:py-12 border-t border-gray-200 dark:border-gray-700 dark-transition">
+            <div class="desktop-container mobile-full mx-auto px-4 md:px-8 mobile-padding text-gray-500 dark:text-gray-400 text-sm">
                 {{ content[currentLang].footer }}
             </div>
         </footer>
