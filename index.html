@@ -13,6 +13,7 @@
     
     <script>
         tailwind.config = {
+            darkMode: 'class',
             theme: {
                 extend: {
                     fontFamily: {
@@ -67,13 +68,32 @@
         .lang-toggle.active {
             background: #f3f4f6;
         }
+        
+        .dark .lang-toggle.active {
+            background: #374151;
+        }
+        
+        @media (max-width: 768px) {
+            .text-left-mobile {
+                text-align: left;
+            }
+        }
     </style>
 </head>
-<body class="bg-white text-gray-900" id="app">
+<body class="bg-white text-gray-900 dark:bg-gray-900 dark:text-gray-100 transition-colors duration-200" id="app">
     
-    <!-- Language Toggle -->
-    <div class="fixed top-8 right-8 z-50">
-        <div class="flex bg-gray-100 rounded-full p-1">
+    <!-- Theme and Language Toggle -->
+    <div class="fixed top-8 right-8 z-50 flex gap-2">
+        <button @click="toggleDarkMode()" class="p-2 rounded-full bg-gray-100 dark:bg-gray-700">
+            <svg v-if="darkMode" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clip-rule="evenodd" />
+            </svg>
+            <svg v-else xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" />
+            </svg>
+        </button>
+        
+        <div class="flex bg-gray-100 dark:bg-gray-700 rounded-full p-1">
             <button @click="currentLang = 'id'" 
                     :class="['lang-toggle px-3 py-1 rounded-full text-sm font-medium', 
                              currentLang === 'id' ? 'active' : '']">
@@ -92,11 +112,11 @@
         
         <!-- Hero Section -->
         <section class="pt-32 pb-24 px-8">
-            <div class="max-w-4xl mx-auto text-center fade-in">
+            <div class="max-w-4xl mx-auto md:text-center text-left-mobile fade-in">
                 <h1 class="text-4xl md:text-6xl font-light mb-8 leading-tight">
                     {{ content[currentLang].greeting }}
                 </h1>
-                <p class="text-xl md:text-2xl text-gray-600 font-light leading-relaxed max-w-3xl mx-auto">
+                <p class="text-xl md:text-2xl text-gray-600 dark:text-gray-400 font-light leading-relaxed max-w-3xl mx-auto md:mx-0">
                     {{ content[currentLang].tagline }}
                 </p>
             </div>
@@ -105,14 +125,14 @@
         <!-- Current Work -->
         <section class="py-16 px-8">
             <div class="max-w-4xl mx-auto">
-                <h2 class="text-2xl md:text-3xl font-light mb-12 text-center">
+                <h2 class="text-2xl md:text-3xl font-light mb-12 md:text-center text-left-mobile">
                     {{ content[currentLang].currentTitle }}
                 </h2>
                 <div class="grid md:grid-cols-3 gap-8">
                     <div v-for="current in content[currentLang].currentWork" 
                          :key="current.type"
-                         class="text-center p-6 hover-lift">
-                        <div class="text-gray-500 text-sm uppercase tracking-wider mb-2">
+                         class="text-left p-6 hover-lift">
+                        <div class="text-gray-500 dark:text-gray-400 text-sm uppercase tracking-wider mb-2">
                             {{ current.type }}
                         </div>
                         <div class="font-medium">
@@ -124,29 +144,29 @@
         </section>
 
         <!-- Main Projects -->
-        <section class="py-16 px-8 bg-gray-50">
+        <section class="py-16 px-8 bg-gray-50 dark:bg-gray-800">
             <div class="max-w-6xl mx-auto">
-                <h2 class="text-2xl md:text-3xl font-light mb-16 text-center">
+                <h2 class="text-2xl md:text-3xl font-light mb-16 md:text-center text-left-mobile">
                     {{ content[currentLang].projectsTitle }}
                 </h2>
                 
                 <!-- Tools & Solutions -->
                 <div class="mb-16">
-                    <h3 class="text-lg font-medium mb-8 text-gray-700">
+                    <h3 class="text-lg font-medium mb-8 text-gray-700 dark:text-gray-300">
                         {{ content[currentLang].toolsTitle }}
                     </h3>
                     <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                         <div v-for="project in content[currentLang].tools" 
                              :key="project.name"
-                             class="project-card bg-white p-6 rounded-lg">
+                             class="project-card bg-white dark:bg-gray-700 p-6 rounded-lg">
                             <h4 class="font-medium mb-2">{{ project.name }}</h4>
-                            <p class="text-gray-600 text-sm mb-4 leading-relaxed">
+                            <p class="text-gray-600 dark:text-gray-300 text-sm mb-4 leading-relaxed">
                                 {{ project.description }}
                             </p>
                             <div class="flex space-x-4 text-sm">
                                 <a :href="project.github" 
                                    target="_blank"
-                                   class="text-gray-500 hover:text-gray-900 transition-colors">
+                                   class="text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
                                     GitHub →
                                 </a>
                                 <a v-if="project.demo" 
@@ -162,26 +182,26 @@
 
                 <!-- Open Source -->
                 <div class="mb-16">
-                    <h3 class="text-lg font-medium mb-8 text-gray-700">
+                    <h3 class="text-lg font-medium mb-8 text-gray-700 dark:text-gray-300">
                         {{ content[currentLang].openSourceTitle }}
                     </h3>
                     <div class="grid md:grid-cols-2 gap-6">
                         <div v-for="project in content[currentLang].openSource" 
                              :key="project.name"
-                             class="project-card bg-white p-6 rounded-lg">
+                             class="project-card bg-white dark:bg-gray-700 p-6 rounded-lg">
                             <h4 class="font-medium mb-2">{{ project.name }}</h4>
-                            <p class="text-gray-600 text-sm mb-4 leading-relaxed">
+                            <p class="text-gray-600 dark:text-gray-300 text-sm mb-4 leading-relaxed">
                                 {{ project.description }}
                             </p>
                             <div class="flex justify-between items-center">
-                                <div class="flex space-x-3 text-xs text-gray-500">
+                                <div class="flex space-x-3 text-xs text-gray-500 dark:text-gray-400">
                                     <span v-for="tech in project.tech" :key="tech">
                                         {{ tech }}
                                     </span>
                                 </div>
                                 <a :href="project.github" 
                                    target="_blank"
-                                   class="text-gray-500 hover:text-gray-900 transition-colors text-sm">
+                                   class="text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors text-sm">
                                     GitHub →
                                 </a>
                             </div>
@@ -191,36 +211,36 @@
 
                 <!-- Creative Work -->
                 <div class="mb-16">
-                    <h3 class="text-lg font-medium mb-8 text-gray-700">
+                    <h3 class="text-lg font-medium mb-8 text-gray-700 dark:text-gray-300">
                         {{ content[currentLang].creativeTitle }}
                     </h3>
                     <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
                         <div v-for="work in content[currentLang].creative" 
                              :key="work.name"
-                             class="project-card bg-white p-4 rounded-lg text-center">
-                            <div class="h-32 bg-gray-100 rounded mb-4 flex items-center justify-center text-gray-400">
+                             class="project-card bg-white dark:bg-gray-700 p-4 rounded-lg text-center">
+                            <div class="h-32 bg-gray-100 dark:bg-gray-600 rounded mb-4 flex items-center justify-center text-gray-400 dark:text-gray-300">
                                 {{ work.type }}
                             </div>
                             <h4 class="font-medium text-sm mb-1">{{ work.name }}</h4>
-                            <p class="text-xs text-gray-600">{{ work.year }}</p>
+                            <p class="text-xs text-gray-600 dark:text-gray-400">{{ work.year }}</p>
                         </div>
                     </div>
                 </div>
 
                 <!-- Writing -->
                 <div>
-                    <h3 class="text-lg font-medium mb-8 text-gray-700">
+                    <h3 class="text-lg font-medium mb-8 text-gray-700 dark:text-gray-300">
                         {{ content[currentLang].writingTitle }}
                     </h3>
                     <div class="space-y-4">
                         <div v-for="article in content[currentLang].writing" 
                              :key="article.title"
-                             class="flex justify-between items-center py-4 border-b border-gray-200 hover-lift">
+                             class="flex justify-between items-center py-4 border-b border-gray-200 dark:border-gray-700 hover-lift">
                             <div>
                                 <h4 class="font-medium mb-1">{{ article.title }}</h4>
-                                <p class="text-sm text-gray-600">{{ article.platform }}</p>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">{{ article.platform }}</p>
                             </div>
-                            <div class="text-sm text-gray-500">
+                            <div class="text-sm text-gray-500 dark:text-gray-500">
                                 {{ article.date }}
                             </div>
                         </div>
@@ -231,26 +251,26 @@
 
         <!-- Contact -->
         <section class="py-24 px-8">
-            <div class="max-w-4xl mx-auto text-center">
+            <div class="max-w-4xl mx-auto md:text-center text-left-mobile">
                 <h2 class="text-2xl md:text-3xl font-light mb-8">
                     {{ content[currentLang].contactTitle }}
                 </h2>
-                <p class="text-gray-600 mb-12 max-w-2xl mx-auto leading-relaxed">
+                <p class="text-gray-600 dark:text-gray-400 mb-12 max-w-2xl mx-auto md:mx-0 leading-relaxed">
                     {{ content[currentLang].contactDesc }}
                 </p>
-                <div class="flex flex-col sm:flex-row justify-center items-center space-y-4 sm:space-y-0 sm:space-x-8">
+                <div class="flex flex-col sm:flex-row justify-start md:justify-center items-start sm:items-center space-y-4 sm:space-y-0 sm:space-x-8">
                     <a href="mailto:hello@domain.com" 
                        class="text-primary hover:text-blue-700 transition-colors font-medium">
                         hello@domain.com
                     </a>
                     <a href="https://github.com/username" 
                        target="_blank"
-                       class="text-gray-600 hover:text-gray-900 transition-colors">
+                       class="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
                         GitHub →
                     </a>
                     <a href="https://linkedin.com/in/username" 
                        target="_blank"
-                       class="text-gray-600 hover:text-gray-900 transition-colors">
+                       class="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
                         LinkedIn →
                     </a>
                 </div>
@@ -258,8 +278,8 @@
         </section>
 
         <!-- Footer -->
-        <footer class="py-12 px-8 border-t border-gray-200">
-            <div class="max-w-4xl mx-auto text-center text-gray-500 text-sm">
+        <footer class="py-12 px-8 border-t border-gray-200 dark:border-gray-700">
+            <div class="max-w-4xl mx-auto text-center text-gray-500 dark:text-gray-400 text-sm">
                 {{ content[currentLang].footer }}
             </div>
         </footer>
@@ -273,6 +293,7 @@
             data() {
                 return {
                     currentLang: 'id',
+                    darkMode: false,
                     content: {
                         id: {
                             greeting: 'Halo, saya Irfan',
@@ -406,6 +427,29 @@
                 const browserLang = navigator.language.substring(0, 2);
                 if (browserLang === 'id' || browserLang === 'en') {
                     this.currentLang = browserLang;
+                }
+                
+                // Check for dark mode preference
+                if (localStorage.getItem('darkMode') {
+                    this.darkMode = localStorage.getItem('darkMode') === 'true';
+                    this.applyDarkMode();
+                } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                    this.darkMode = true;
+                    this.applyDarkMode();
+                }
+            },
+            methods: {
+                toggleDarkMode() {
+                    this.darkMode = !this.darkMode;
+                    localStorage.setItem('darkMode', this.darkMode);
+                    this.applyDarkMode();
+                },
+                applyDarkMode() {
+                    if (this.darkMode) {
+                        document.documentElement.classList.add('dark');
+                    } else {
+                        document.documentElement.classList.remove('dark');
+                    }
                 }
             }
         }).mount('#app');
