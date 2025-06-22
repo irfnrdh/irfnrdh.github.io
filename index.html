@@ -63,26 +63,79 @@
             color: #f9fafb;
         }
         
-        /* Desktop: tidak terlalu wide, tapi juga tidak terlalu sempit */
-        .desktop-container {
+        /* Layout rata kiri untuk semua ukuran layar */
+        .left-aligned-container {
             max-width: 1200px;
+            margin-left: 0;
+            margin-right: auto;
         }
         
-        /* Mobile: full width dengan padding yang cukup */
+        /* Mobile: padding yang cukup */
         @media (max-width: 768px) {
             .mobile-padding {
                 padding-left: 1rem;
                 padding-right: 1rem;
             }
             
-            .mobile-full {
-                max-width: none;
+            .left-aligned-container {
+                margin-left: auto;
+                margin-right: auto;
             }
         }
         
-        /* Animasi untuk dark mode transition */
+        /* Desktop: tetap rata kiri */
+        @media (min-width: 769px) {
+            .left-aligned-container {
+                margin-left: 2rem;
+                margin-right: auto;
+            }
+        }
+        
+        /* Animasi untuk dark mode transition yang lebih comprehensive */
         .dark-transition {
             transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+        }
+        
+        /* Pastikan semua elemen mengikuti dark mode */
+        .dark {
+            color-scheme: dark;
+        }
+        
+        .dark body {
+            background-color: #111827;
+            color: #f9fafb;
+        }
+        
+        .dark .bg-gray-50 {
+            background-color: #1f2937 !important;
+        }
+        
+        .dark .bg-white {
+            background-color: #374151 !important;
+        }
+        
+        .dark .text-gray-900 {
+            color: #f9fafb !important;
+        }
+        
+        .dark .text-gray-700 {
+            color: #d1d5db !important;
+        }
+        
+        .dark .text-gray-600 {
+            color: #9ca3af !important;
+        }
+        
+        .dark .text-gray-500 {
+            color: #6b7280 !important;
+        }
+        
+        .dark .border-gray-200 {
+            border-color: #4b5563 !important;
+        }
+        
+        .dark .bg-gray-100 {
+            background-color: #4b5563 !important;
         }
     </style>
 </head>
@@ -99,7 +152,7 @@
             </svg>
         </button>
         
-        <div class="flex bg-gray-100 dark:bg-gray-700 rounded-full p-1 shadow-lg">
+        <div class="flex bg-gray-100 dark:bg-gray-700 rounded-full p-1 shadow-lg dark-transition">
             <button @click="currentLang = 'id'" 
                     :class="['lang-toggle px-3 py-1 rounded-full text-sm font-medium', 
                              currentLang === 'id' ? 'active' : '']">
@@ -114,11 +167,11 @@
     </div>
 
     <!-- Main Content -->
-    <div class="min-h-screen">
+    <div class="min-h-screen dark-transition">
         
         <!-- Hero Section -->
         <section class="pt-24 md:pt-32 pb-16 md:pb-24">
-            <div class="desktop-container mobile-full mx-auto px-4 md:px-8 mobile-padding fade-in">
+            <div class="left-aligned-container px-4 md:px-8 mobile-padding fade-in">
                 <h1 class="text-4xl md:text-5xl lg:text-6xl font-light mb-6 md:mb-8 leading-tight">
                     {{ content[currentLang].greeting }}
                 </h1>
@@ -130,7 +183,7 @@
 
         <!-- Current Work -->
         <section class="py-12 md:py-16">
-            <div class="desktop-container mobile-full mx-auto px-4 md:px-8 mobile-padding">
+            <div class="left-aligned-container px-4 md:px-8 mobile-padding">
                 <h2 class="text-2xl md:text-3xl font-light mb-8 md:mb-12">
                     {{ content[currentLang].currentTitle }}
                 </h2>
@@ -151,7 +204,7 @@
 
         <!-- Main Projects -->
         <section class="py-12 md:py-16 bg-gray-50 dark:bg-gray-800 dark-transition">
-            <div class="desktop-container mobile-full mx-auto px-4 md:px-8 mobile-padding">
+            <div class="left-aligned-container px-4 md:px-8 mobile-padding">
                 <h2 class="text-2xl md:text-3xl font-light mb-12 md:mb-16">
                     {{ content[currentLang].projectsTitle }}
                 </h2>
@@ -257,7 +310,7 @@
 
         <!-- Contact -->
         <section class="py-16 md:py-24">
-            <div class="desktop-container mobile-full mx-auto px-4 md:px-8 mobile-padding">
+            <div class="left-aligned-container px-4 md:px-8 mobile-padding">
                 <h2 class="text-2xl md:text-3xl font-light mb-6 md:mb-8">
                     {{ content[currentLang].contactTitle }}
                 </h2>
@@ -285,7 +338,7 @@
 
         <!-- Footer -->
         <footer class="py-8 md:py-12 border-t border-gray-200 dark:border-gray-700 dark-transition">
-            <div class="desktop-container mobile-full mx-auto px-4 md:px-8 mobile-padding text-gray-500 dark:text-gray-400 text-sm">
+            <div class="left-aligned-container px-4 md:px-8 mobile-padding text-gray-500 dark:text-gray-400 text-sm">
                 {{ content[currentLang].footer }}
             </div>
         </footer>
@@ -453,8 +506,10 @@
                 applyDarkMode() {
                     if (this.darkMode) {
                         document.documentElement.classList.add('dark');
+                        document.body.classList.add('dark');
                     } else {
                         document.documentElement.classList.remove('dark');
+                        document.body.classList.remove('dark');
                     }
                 }
             }
