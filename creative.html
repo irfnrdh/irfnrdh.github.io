@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creative Work - @irfnrdh</title>
+    <meta name="description" content="Creative works and visual projects by Irfannur Diah">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎨</text></svg>">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/vue@3.2.47/dist/vue.global.prod.js"></script>
+    
+    <style>
+        * {
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.8s ease-in-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .hover-lift {
+            transition: all 0.3s ease;
+        }
+        
+        .hover-lift:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        
+        .project-card {
+            transition: all 0.4s ease;
+            border: 1px solid transparent;
+            backdrop-filter: blur(10px);
+        }
+        
+        .project-card:hover {
+            border-color: #e5e7eb;
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.15);
+        }
+        
+        .dark .project-card:hover {
+            border-color: #4b5563;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        
+        .gallery-item {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .gallery-item:hover {
+            transform: scale(1.05);
+        }
+        
+        .modal-backdrop {
+            backdrop-filter: blur(10px);
+            background: rgba(0,0,0,0.8);
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .dark .gradient-bg {
+            background: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
+        }
+        
+        .glass-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .dark .glass-card {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .creative-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+        
+        @media (max-width: 768px) {
+            .creative-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+        }
+        
+        .image-placeholder {
+            background: linear-gradient(45deg, #f0f0f0, #e0e0e0);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #888;
+            font-size: 0.9rem;
+        }
+        
+        .dark .image-placeholder {
+            background: linear-gradient(45deg, #374151, #4b5563);
+            color: #9ca3af;
+        }
+        
+        .tag {
+            background: rgba(99, 102, 241, 0.1);
+            color: #6366f1;
+            border: 1px solid rgba(99, 102, 241, 0.2);
+        }
+        
+        .dark .tag {
+            background: rgba(99, 102, 241, 0.2);
+            color: #a5b4fc;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-300" id="app">
+    
+    <!-- Header with Navigation -->
+    <header class="sticky top-0 z-40 bg-white/80 dark:bg-gray-900/80 backdrop-blur-lg border-b border-gray-200 dark:border-gray-700">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+            <a href="#" onclick="history.back()" class="flex items-center space-x-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                </svg>
+                <span>Back</span>
+            </a>
+            
+            <div class="flex items-center space-x-3">
+                <!-- Language Toggle -->
+                <div class="flex bg-gray-100 dark:bg-gray-800 rounded-full p-1">
+                    <button @click="currentLang = 'id'" 
+                            :class="['px-3 py-1 rounded-full text-sm font-medium transition-all', 
+                                     currentLang === 'id' ? 'bg-white dark:bg-gray-700 shadow-sm' : '']">
+                        🇮🇩 ID
+                    </button>
+                    <button @click="currentLang = 'en'" 
+                            :class="['px-3 py-1 rounded-full text-sm font-medium transition-all',
+                                     currentLang === 'en' ? 'bg-white dark:bg-gray-700 shadow-sm' : '']">
+                        🇬🇧 EN
+                    </button>
+                </div>
+                
+                <!-- Dark Mode Toggle -->
+                <button @click="toggleDarkMode()" class="p-2 rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
+                    <svg v-if="darkMode" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                    </svg>
+                    <svg v-else class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="gradient-bg text-white py-20 relative overflow-hidden">
+        <div class="absolute inset-0">
+            <div class="absolute inset-0 bg-black/20"></div>
+            <div class="absolute top-20 left-20 w-72 h-72 bg-white/10 rounded-full blur-3xl"></div>
+            <div class="absolute bottom-20 right-20 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl"></div>
+        </div>
+        
+        <div class="max-w-7xl mx-auto px-4 relative z-10">
+            <div class="text-center fade-in">
+                <h1 class="text-5xl md:text-7xl font-bold mb-6">
+                    {{ content[currentLang].hero.title }}
+                </h1>
+                <p class="text-xl md:text-2xl opacity-90 max-w-3xl mx-auto leading-relaxed">
+                    {{ content[currentLang].hero.subtitle }}
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Creative Works Grid -->
+    <section class="py-20">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="creative-grid">
+                <div v-for="(work, index) in content[currentLang].works" 
+                     :key="index"
+                     class="project-card bg-white dark:bg-gray-800 rounded-2xl overflow-hidden shadow-lg hover-lift">
+                    
+                    <!-- Image Gallery -->
+                    <div class="relative">
+                        <div class="aspect-video bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800">
+                            <div v-if="work.images && work.images.length > 0" class="w-full h-full">
+                                <img :src="work.images[0]" 
+                                     :alt="work.title"
+                                     class="w-full h-full object-cover gallery-item"
+                                     @click="openModal(work, 0)">
+                            </div>
+                            <div v-else class="image-placeholder w-full h-full">
+                                <div class="text-center">
+                                    <div class="text-4xl mb-2">{{ work.icon }}</div>
+                                    <div>{{ work.type }}</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Image Counter -->
+                        <div v-if="work.images && work.images.length > 1" 
+                             class="absolute top-4 right-4 glass-card px-3 py-1 rounded-full text-sm text-white">
+                            {{ work.images.length }} {{ content[currentLang].ui.images }}
+                        </div>
+                        
+                        <!-- Type Badge -->
+                        <div class="absolute bottom-4 left-4">
+                            <span class="tag px-3 py-1 rounded-full text-sm font-medium">
+                                {{ work.type }}
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <!-- Content -->
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-4">
+                            <h3 class="text-2xl font-bold">{{ work.title }}</h3>
+                            <span class="text-sm text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-700 px-3 py-1 rounded-full">
+                                {{ work.year }}
+                            </span>
+                        </div>
+                        
+                        <p class="text-gray-600 dark:text-gray-300 mb-6 leading-relaxed">
+                            {{ work.description }}
+                        </p>
+                        
+                        <!-- Tags -->
+                        <div v-if="work.tags" class="flex flex-wrap gap-2 mb-6">
+                            <span v-for="tag in work.tags" :key="tag" 
+                                  class="px-3 py-1 bg-gray-100 dark:bg-gray-700 rounded-full text-sm text-gray-600 dark:text-gray-300">
+                                {{ tag }}
+                            </span>
+                        </div>
+                        
+                        <!-- Action Buttons -->
+                        <div class="flex space-x-3">
+                            <button v-if="work.images && work.images.length > 0"
+                                    @click="openModal(work, 0)"
+                                    class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg transition-colors font-medium">
+                                {{ content[currentLang].ui.viewGallery }}
+                            </button>
+                            <a v-if="work.link" 
+                               :href="work.link" 
+                               target="_blank"
+                               class="flex-1 border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 px-4 py-2 rounded-lg transition-colors text-center font-medium">
+                                {{ content[currentLang].ui.viewProject }}
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Modal for Image Gallery -->
+    <div v-if="modalWork" 
+         class="fixed inset-0 z-50 modal-backdrop flex items-center justify-center p-4"
+         @click="closeModal">
+        <div class="bg-white dark:bg-gray-800 rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden shadow-2xl"
+             @click.stop>
+            
+            <!-- Modal Header -->
+            <div class="p-6 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
+                <div>
+                    <h3 class="text-2xl font-bold">{{ modalWork.title }}</h3>
+                    <p class="text-gray-600 dark:text-gray-400">{{ modalWork.type }} • {{ modalWork.year }}</p>
+                </div>
+                <button @click="closeModal" 
+                        class="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+            
+            <!-- Modal Content -->
+            <div class="p-6 max-h-[calc(90vh-120px)] overflow-y-auto">
+                <!-- Current Image -->
+                <div v-if="modalWork.images && modalWork.images.length > 0" class="mb-6">
+                    <img :src="modalWork.images[currentImageIndex]" 
+                         :alt="modalWork.title"
+                         class="w-full h-96 object-cover rounded-lg">
+                    
+                    <!-- Image Navigation -->
+                    <div v-if="modalWork.images.length > 1" class="flex justify-center mt-4 space-x-2">
+                        <button v-for="(image, index) in modalWork.images" 
+                                :key="index"
+                                @click="currentImageIndex = index"
+                                :class="['w-3 h-3 rounded-full transition-colors', 
+                                         index === currentImageIndex ? 'bg-indigo-600' : 'bg-gray-300 dark:bg-gray-600']">
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Description -->
+                <div class="prose dark:prose-invert max-w-none">
+                    <p class="text-lg leading-relaxed">{{ modalWork.description }}</p>
+                    
+                    <!-- Additional Details -->
+                    <div v-if="modalWork.details" class="mt-6">
+                        <h4 class="text-xl font-semibold mb-4">{{ content[currentLang].ui.details }}</h4>
+                        <div class="space-y-3">
+                            <div v-for="(detail, key) in modalWork.details" :key="key" class="flex">
+                                <span class="font-medium w-24 text-gray-600 dark:text-gray-400">{{ key }}:</span>
+                                <span>{{ detail }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contact Section -->
+    <section class="py-20 bg-gray-100 dark:bg-gray-800">
+        <div class="max-w-4xl mx-auto px-4 text-center">
+            <h2 class="text-3xl font-bold mb-6">{{ content[currentLang].contact.title }}</h2>
+            <p class="text-xl text-gray-600 dark:text-gray-300 mb-8">{{ content[currentLang].contact.subtitle }}</p>
+            <div class="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-6">
+                <a href="mailto:irfnrdh@gmail.com" 
+                   class="bg-indigo-600 hover:bg-indigo-700 text-white px-8 py-3 rounded-lg transition-colors font-medium">
+                    {{ content[currentLang].contact.email }}
+                </a>
+                <a href="https://instagram.com/visuwall.ind" 
+                   target="_blank"
+                   class="border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 px-8 py-3 rounded-lg transition-colors font-medium">
+                    {{ content[currentLang].contact.instagram }}
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        const { createApp } = Vue;
+        
+        createApp({
+            data() {
+                return {
+                    currentLang: 'en',
+                    darkMode: false,
+                    modalWork: null,
+                    currentImageIndex: 0,
+                    content: {
+                        id: {
+                            hero: {
+                                title: 'Karya Kreatif',
+                                subtitle: 'Eksplorasi visual dan desain yang menggabungkan kreativitas dengan teknologi'
+                            },
+                            works: [
+                                {
+                                    title: 'Visuwallind',
+                                    type: 'Visual Design',
+                                    year: '2024',
+                                    icon: '🎨',
+                                    description: 'Cerita visual lain dari pikiran - eksplorasi desain grafis yang menggabungkan elemen tradisional dan modern dalam narasi visual yang kuat.',
+                                    images: [
+                                        'https://images.unsplash.com/photo-1561070791-2526d30994b5?w=800&q=80',
+                                        'https://images.unsplash.com/photo-1572044162444-ad60f128bdea?w=800&q=80',
+                                        'https://images.unsplash.com/photo-1586953208448-b95a79798f07?w=800&q=80'
+                                    ],
+                                    tags: ['Visual Design', 'Branding', 'Art Direction'],
+                                    link: 'https://www.instagram.com/visuwall.ind',
+                                    details: {
+                                        'Platform': 'Instagram',
+                                        'Status': 'Aktif',
+                                        'Fokus': 'Visual Storytelling'
+                                    }
+                                },
+                                {
+                                    title: 'Fotoind',
+                                    type: 'Photography',
+                                    year: '2014',
+                                    icon: '📸',
+                                    description: 'Diary visual acak dari kampung halaman - dokumentasi kehidupan sehari-hari dengan perspektif unik dan autentik.',
+                                    images: [
+                                        'https://images.unsplash.com/photo-1502920917128-1aa500764cbd?w=800&q=80',
+                                        'https://images.unsplash.com/photo-1496449903678-68ddcb189a24?w=800&q=80',
+                                        'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&q=80'
+                                    ],
+                                    tags: ['Street Photography', 'Documentary', 'Local Culture'],
+                                    details: {
+                                        'Genre': 'Street & Documentary',
+                                        'Lokasi': 'Aceh, Indonesia',
+                                        'Periode': '2014-2018'
+                                    }
+                                },
+                                {
+                                    title: 'Old School Design',
+                                    type: 'Graphic Design',
+                                    year: '2013',
+                                    icon: '🎯',
+                                    description: 'Koleksi desain grafis dengan pendekatan klasik - eksplorasi tipografi dan komposisi dengan sentuhan vintage yang khas.',
+                                    images: [
+                                        'https://images.unsplash.com/photo-1611224923853-80b023f02d71?w=800&q=80',
+                                        'https://images.unsplash.com/photo-1572044162444-ad60f128bdea?w=800&q=80'
+                                    ],
+                                    tags: ['Typography', 'Vintage Design', 'Print Design'],
+                                    details: {
+                                        'Style': 'Vintage & Retro',
+                                        'Medium': 'Digital & Print',
+                                        'Influence': 'Classic Typography'
+                                    }
+                                },
+                                {
+                                    title: 'Brand Identity Projects',
+                                    type: 'Branding',
+                                    year: '2024',
+                                    icon: '🏢',
+                                    description: 'Identitas visual untuk berbagai organisasi dan institusi pendidikan - menciptakan brand yang memorable dan meaningful.',
+                                    images: [
+                                        'https://images.unsplash.com/photo-1559403607-a1d91c15fccc?w=800&q=80',
+                                        'https://images.unsplash.com/photo-1572044162444-ad60f128bdea?w=800&q=80'
+                                    ],
+                                    tags: ['Brand Identity', 'Logo Design', 'Corporate Design'],
+                                    details: {
+                                        'Klien': 'Institusi Pendidikan',
+                                        'Scope': 'Logo, Guidelines, Aplikasi',
+                                        'Approach': 'Minimalist & Functional'
+                                    }
+                                }
+                            ],
+                            ui: {
+                                images: 'gambar',
+                                viewGallery: 'Lihat Galeri',
+                                viewProject: 'Lihat Proyek',
+                                details: 'Detail Proyek'
+                            },
+                            contact: {
+                                title: 'Tertarik Berkolaborasi?',
+                                subtitle: 'Mari diskusikan proyek kreatif Anda atau ide visual yang ingin diwujudkan',
+                                email: 'Email Saya',
+                                instagram: 'Follow Instagram'
+                            }
+                        },
+                        en: {
+                            hero: {
+                                title: 'Creative Works',
+                                subtitle: 'Visual exploration and design that combines creativity with technology'
+                            },
+                            works: [
+                                {
+                                    title: 'Visuwallind',
+                                    type: 'Visual Design',
+                                    year: '2024',
+                                    icon: '🎨',
+                                    description: 'Another visual story from mind - graphic design exploration that combines traditional and modern elements in strong visual narratives.',
+                                    images: [
+                                        'https://images.unsplash.com/photo-1561070791-2526d30994b5?w=800&q=80',
+                                        'https://images.unsplash.com/photo-1572044162444-ad60f128bdea?w=800&q=80',
+                                        'https://images.unsplash.com/photo-1586953208448-b95a79798f07?w=800&q=80'
+                                    ],
+                                    tags: ['Visual Design', 'Branding', 'Art Direction'],
+                                    link: 'https://www.instagram.com/visuwall.ind',
+                                    details: {
+                                        'Platform': 'Instagram',
+                                        'Status': 'Active',
+                                        'Focus': 'Visual Storytelling'
+                                    }
+                                },
+                                {
+                                    title: 'Fotoind',
+                                    type: 'Photography',
+                                    year: '2014',
+                                    icon: '📸',
+                                    description: 'A random visual diary from hometown - documenting daily life with unique and authentic perspectives.',
+                                    images: [
+                                        'https://images.unsplash.com/photo-1502920917128-1aa500764cbd?w=800&q=80',
+                                        'https://images.unsplash.com/photo-1496449903678-68ddcb189a24?w=800&q=80',
+                                        'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&q=80'
+                                    ],
+                                    tags: ['Street Photography', 'Documentary', 'Local Culture'],
+                                    details: {
+                                        'Genre': 'Street & Documentary',
+                                        'Location': 'Aceh, Indonesia',
+                                        'Period': '2014-2018'
+                                    }
+                                },
+                                {
+                                    title: 'Old School Design',
+                                    type: 'Graphic Design',
+                                    year: '2013',
+                                    icon: '🎯',
+                                    description: 'Collection of graphic designs with classic approach - exploring typography and composition with distinctive vintage touches.',
+                                    images: [
+                                        'https://images.unsplash.com/photo-1611224923853-80b023f02d71?w=800&q=80',
+                                        'https://images.unsplash.com/photo-1572044162444-ad60f128bdea?w=800&q=80'
+                                    ],
+                                    tags: ['Typography', 'Vintage Design', 'Print Design'],
+                                    details: {
+                                        'Style': 'Vintage & Retro',
+                                        'Medium': 'Digital & Print',
+                                        'Influence': 'Classic Typography'
+                                    }
+                                },
+                                {
+                                    title: 'Brand Identity Projects',
+                                    type: 'Branding',
+                                    year: '2024',
+                                    icon: '🏢',
+                                    description: 'Visual identity for various organizations and educational institutions - creating memorable and meaningful brands.',
+                                    images: [
+                                        'https://images.unsplash.com/photo-1559403607-a1d91c15fccc?w=800&q=80',
+                                        'https://images.unsplash.com/photo-1572044162444-ad60f128bdea?w=800&q=80'
+                                    ],
+                                    tags: ['Brand Identity', 'Logo Design', 'Corporate Design'],
+                                    details: {
+                                        'Client': 'Educational Institutions',
+                                        'Scope': 'Logo, Guidelines, Applications',
+                                        'Approach': 'Minimalist & Functional'
+                                    }
+                                }
+                            ],
+                            ui: {
+                                images: 'images',
+                                viewGallery: 'View Gallery',
+                                viewProject: 'View Project',
+                                details: 'Project Details'
+                            },
+                            contact: {
+                                title: 'Interested in Collaborating?',
+                                subtitle: 'Let\'s discuss your creative project or visual ideas you want to bring to life',
+                                email: 'Email Me',
+                                instagram: 'Follow Instagram'
+                            }
+                        }
+                    }
+                }
+            },
+            mounted() {
+                // Auto-detect browser language
+                const browserLang = navigator.language.substring(0, 2);
+                if (browserLang === 'id' || browserLang === 'en') {
+                    this.currentLang = browserLang;
+                }
+                
+                // Check for dark mode preference
+                if (localStorage.getItem('darkMode')) {
+                    this.darkMode = localStorage.getItem('darkMode') === 'true';
+                    this.applyDarkMode();
+                } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                    this.darkMode = true;
+                    this.applyDarkMode();
+                }
+            },
+            methods: {
+                toggleDarkMode() {
+                    this.darkMode = !this.darkMode;
+                    localStorage.setItem('darkMode', this.darkMode);
+                    this.applyDarkMode();
+                },
+                applyDarkMode() {
+                    if (this.darkMode) {
+                        document.documentElement.classList.add('dark');
+                    } else {
+                        document.documentElement.classList.remove('dark');
+                    }
+                },
+                openModal(work, imageIndex = 0) {
+                    this.modalWork = work;
+                    this.currentImageIndex = imageIndex;
+                    document.body.style.overflow = 'hidden';
+                },
+                closeModal() {
+                    this.modalWork = null;
+                    this.currentImageIndex = 0;
+                    document.body.style.overflow = 'auto';
+                }
+            }
+        }).mount('#app');
+    </script>
+</body>
+</html>

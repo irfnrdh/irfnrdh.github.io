@@ -404,9 +404,11 @@
 
                 <!-- Creative Work -->
                 <div class="mb-12 md:mb-16">
-                    <h3 class="text-lg md:text-xl font-medium mb-6 md:mb-8 text-gray-700 dark:text-gray-300">
-                        {{ content[currentLang].creativeTitle }}
-                    </h3>
+                    <a href="/creative.html" class="cursor-pointer">
+                        <h3 class="text-lg md:text-xl font-medium mb-6 md:mb-8 text-gray-700 dark:text-gray-300">
+                            {{ content[currentLang].creativeTitle }}
+                        </h3>
+                    </a>
                     <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
                         <div v-for="work in content[currentLang].creative" 
                              :key="work.name"
@@ -604,7 +606,7 @@ function onYouTubeIframeAPIReady() {
                             footer: '© 2025 Irfannur Diah (@irfnrdh)'
                         },
                         en: {
-                            greeting: 'Hi, I\'m Irfan',
+                            greeting: 'Hi, I\'m Irfn',
                             // tagline: "Empowering education and culture locally by day, <br> Crafting digital product pairing with AI Agents by night. <br> Bug Hunting in the weekend & Full-time thinker, lifelong creator.",                            
 
                             tagline: "Empowering local education by sunlight, product engineering by moonlight.<br>A father, productive with AI, bug hunter on weekends, never stop hacking",
