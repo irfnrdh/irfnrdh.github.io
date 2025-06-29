@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About: Irfannur Diah (@irfnrdh)</title>
+    <meta name="description" content="Learn more about Irfannur Diah - Education administrator, technology enthusiast, and creative problem solver">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>👨‍💻</text></svg>">
+    
+    <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://unpkg.com/vue@3.2.47/dist/vue.global.prod.js"></script>
+    
+    <style>
+        * {
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.8s ease-in-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .hover-lift {
+            transition: all 0.2s ease;
+        }
+        
+        .hover-lift:hover {
+            transform: translateY(-2px);
+        }
+        
+        .timeline-item {
+            transition: all 0.3s ease;
+        }
+        
+        .timeline-item:hover {
+            transform: translateX(4px);
+        }
+        
+        .skill-badge {
+            transition: all 0.2s ease;
+        }
+        
+        .skill-badge:hover {
+            transform: scale(1.05);
+        }
+        
+        .lang-toggle {
+            transition: all 0.2s ease;
+        }
+        
+        .lang-toggle.active {
+            background: #f3f4f6;
+            color: #111827;
+        }
+        
+        .dark .lang-toggle.active {
+            background: #374151;
+            color: #f9fafb;
+        }
+        
+        .left-aligned-container {
+            max-width: 1200px;
+            margin-left: 0;
+            margin-right: auto;
+        }
+        
+        @media (max-width: 768px) {
+            .mobile-padding {
+                padding-left: 1rem;
+                padding-right: 1rem;
+            }
+            
+            .left-aligned-container {
+                margin-left: auto;
+                margin-right: auto;
+            }
+        }
+        
+        @media (min-width: 769px) {
+            .left-aligned-container {
+                margin-left: 2rem;
+                margin-right: auto;
+            }
+        }
+        
+        .dark-transition {
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+        }
+        
+        .dark {
+            color-scheme: dark;
+        }
+        
+        .dark body {
+            background-color: #111827;
+            color: #f9fafb;
+        }
+        
+        .dark .bg-gray-50 {
+            background-color: #1f2937 !important;
+        }
+        
+        .dark .bg-white {
+            background-color: #1f2937 !important;
+        }
+        
+        .dark .text-gray-900 {
+            color: #f9fafb !important;
+        }
+        
+        .dark .text-gray-700 {
+            color: #d1d5db !important;
+        }
+        
+        .dark .text-gray-600 {
+            color: #9ca3af !important;
+        }
+        
+        .dark .text-gray-500 {
+            color: #6b7280 !important;
+        }
+        
+        .dark .border-gray-200 {
+            border-color: #4b5563 !important;
+        }
+        
+        .dark .bg-gray-100 {
+            background-color: #374151 !important;
+        }
+        
+        .dark .bg-gray-700 {
+            background-color: #374151 !important;
+        }
+        
+        .dark .bg-gray-800 {
+            background-color: #1f2937 !important;
+        }
+        
+        .dark .bg-gray-900 {
+            background-color: #111827 !important;
+        }
+
+        .photo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .photo-item {
+            aspect-ratio: 1;
+            overflow: hidden;
+            border-radius: 0.5rem;
+            background: #f3f4f6;
+        }
+
+        .dark .photo-item {
+            background: #374151;
+        }
+
+        .progress-bar {
+            height: 4px;
+            background: #e5e7eb;
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .dark .progress-bar {
+            background: #374151;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #3b82f6, #1d4ed8);
+            border-radius: 2px;
+            transition: width 0.8s ease;
+        }
+    </style>
+</head>
+<body class="bg-white text-gray-900 dark:bg-gray-900 dark-transition" id="app">
+    
+    <!-- Navigation & Theme Toggle -->
+    <div class="fixed top-4 right-4 md:top-6 md:right-6 z-50 flex gap-2">
+        <a href="/" class="p-2 rounded-full bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 dark-transition shadow-lg">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
+            </svg>
+        </a>
+        
+        <button @click="toggleDarkMode()" class="p-2 rounded-full bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 dark-transition shadow-lg">
+            <svg v-if="darkMode" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clip-rule="evenodd" />
+            </svg>
+            <svg v-else xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" />
+            </svg>
+        </button>
+        
+        <div class="flex bg-gray-100 dark:bg-gray-700 rounded-full p-1 shadow-lg dark-transition">
+            <button @click="currentLang = 'id'" 
+                    :class="['lang-toggle px-3 py-1 rounded-full text-sm font-medium', 
+                             currentLang === 'id' ? 'active' : '']">
+                🇮🇩 ID
+            </button>
+            <button @click="currentLang = 'en'" 
+                    :class="['lang-toggle px-3 py-1 rounded-full text-sm font-medium',
+                             currentLang === 'en' ? 'active' : '']">
+                🇬🇧 EN
+            </button>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="min-h-screen dark-transition">
+        
+        <!-- Hero Section -->
+        <section class="pt-24 md:pt-32 pb-12 md:pb-16">
+            <div class="left-aligned-container px-4 md:px-8 mobile-padding fade-in">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 md:gap-12 items-start">
+                    <!-- Text Content -->
+                    <div class="lg:col-span-2">
+                        <h1 class="text-4xl md:text-5xl lg:text-6xl font-light mb-6 md:mb-8 leading-tight dark:text-white">
+                            {{ content[currentLang].title }}
+                        </h1>
+                        <div class="prose prose-lg max-w-none text-gray-600 dark:text-gray-300 leading-relaxed">
+                            <p v-html="content[currentLang].intro"></p>
+                        </div>
+                    </div>
+                    
+                    <!-- Profile Image -->
+                    <div class="lg:col-span-1">
+                        <div class="aspect-square bg-gray-200 dark:bg-gray-700 rounded-2xl overflow-hidden hover-lift">
+                            <img src="https://images.unsplash.com/profile-1715081357931-c6643e8ba7d7image?w=400&dpr=1&crop=faces&bg=%23fff&h=400&auto=format&fit=crop&q=60&ixlib=rb-4.1.0" 
+                                 alt="Irfannur Diah" 
+                                 class="w-full h-full object-cover">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Journey Timeline -->
+        <section class="py-12 md:py-16 bg-gray-50 dark:bg-gray-800 dark-transition">
+            <div class="left-aligned-container px-4 md:px-8 mobile-padding">
+                <h2 class="text-2xl md:text-3xl font-light mb-8 md:mb-12 dark:text-white">
+                    {{ content[currentLang].journeyTitle }}
+                </h2>
+                
+                <div class="space-y-6 md:space-y-8">
+                    <div v-for="item in content[currentLang].journey" 
+                         :key="item.year"
+                         class="timeline-item flex flex-col md:flex-row md:items-center gap-4 md:gap-8 p-4 md:p-6 bg-white dark:bg-gray-700 rounded-lg dark-transition">
+                        <div class="flex-shrink-0">
+                            <div class="text-2xl md:text-3xl font-light text-blue-600 dark:text-blue-400 mb-1">
+                                {{ item.year }}
+                            </div>
+                            <div class="text-sm text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                {{ item.type }}
+                            </div>
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="text-lg md:text-xl font-medium mb-2 text-gray-900 dark:text-white">
+                                {{ item.title }}
+                            </h3>
+                            <p class="text-gray-600 dark:text-gray-300 leading-relaxed">
+                                {{ item.description }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Skills & Expertise -->
+        <section class="py-12 md:py-16">
+            <div class="left-aligned-container px-4 md:px-8 mobile-padding">
+                <h2 class="text-2xl md:text-3xl font-light mb-8 md:mb-12 dark:text-white">
+                    {{ content[currentLang].skillsTitle }}
+                </h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+                    <div v-for="category in content[currentLang].skills" 
+                         :key="category.category"
+                         class="bg-white dark:bg-gray-800 p-6 rounded-lg dark-transition">
+                        <h3 class="text-lg font-medium mb-4 text-gray-900 dark:text-white">
+                            {{ category.category }}
+                        </h3>
+                        <div class="space-y-3">
+                            <div v-for="skill in category.items" :key="skill.name">
+                                <div class="flex justify-between items-center mb-1">
+                                    <span class="text-sm text-gray-600 dark:text-gray-300">{{ skill.name }}</span>
+                                    <span class="text-xs text-gray-500 dark:text-gray-400">{{ skill.level }}%</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" :style="`width: ${skill.level}%`"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Values & Philosophy -->
+        <section class="py-12 md:py-16 bg-gray-50 dark:bg-gray-800 dark-transition">
+            <div class="left-aligned-container px-4 md:px-8 mobile-padding">
+                <h2 class="text-2xl md:text-3xl font-light mb-8 md:mb-12 dark:text-white">
+                    {{ content[currentLang].valuesTitle }}
+                </h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+                    <div v-for="value in content[currentLang].values" 
+                         :key="value.title"
+                         class="bg-white dark:bg-gray-700 p-6 rounded-lg hover-lift dark-transition">
+                        <div class="text-3xl mb-4">{{ value.icon }}</div>
+                        <h3 class="text-lg font-medium mb-3 text-gray-900 dark:text-white">
+                            {{ value.title }}
+                        </h3>
+                        <p class="text-gray-600 dark:text-gray-300 leading-relaxed">
+                            {{ value.description }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Behind the Scenes -->
+        <section class="py-12 md:py-16">
+            <div class="left-aligned-container px-4 md:px-8 mobile-padding">
+                <h2 class="text-2xl md:text-3xl font-light mb-8 md:mb-12 dark:text-white">
+                    {{ content[currentLang].behindTitle }}
+                </h2>
+                
+                <div class="photo-grid mb-8">
+                    <div v-for="photo in content[currentLang].behindPhotos" 
+                         :key="photo.alt"
+                         class="">
+                       <img :src="photo.src" class="photo-item hover-lift dark-transition flex items-center justify-center text-gray-400 dark:text-gray-500 text-sm"> 
+                       <!-- {{ photo.placeholder }} -->
+                    </div>
+                </div>
+                
+                <div class="prose prose-lg max-w-none text-gray-600 dark:text-gray-300 leading-relaxed">
+                    <p v-html="content[currentLang].behindDesc"></p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Fun Facts -->
+        <section class="py-12 md:py-16 bg-gray-50 dark:bg-gray-800 dark-transition">
+            <div class="left-aligned-container px-4 md:px-8 mobile-padding">
+                <h2 class="text-2xl md:text-3xl font-light mb-8 md:mb-12 dark:text-white">
+                    {{ content[currentLang].factsTitle }}
+                </h2>
+                
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+                    <div v-for="fact in content[currentLang].facts" 
+                         :key="fact.label"
+                         class="text-center p-4 bg-white dark:bg-gray-700 rounded-lg hover-lift dark-transition">
+                        <div class="text-2xl md:text-3xl font-light text-blue-600 dark:text-blue-400 mb-2">
+                            {{ fact.value }}
+                        </div>
+                        <div class="text-sm text-gray-600 dark:text-gray-300">
+                            {{ fact.label }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact CTA -->
+        <section class="py-16 md:py-24">
+            <div class="left-aligned-container px-4 md:px-8 mobile-padding text-center">
+                <h2 class="text-2xl md:text-3xl font-light mb-6 md:mb-8 dark:text-white">
+                    {{ content[currentLang].ctaTitle }}
+                </h2>
+                <p class="text-gray-600 dark:text-gray-300 mb-8 md:mb-12 max-w-2xl mx-auto leading-relaxed">
+                    {{ content[currentLang].ctaDesc }}
+                </p>
+                <div class="flex flex-col sm:flex-row sm:justify-center sm:items-center space-y-4 sm:space-y-0 sm:space-x-8">
+                    <a href="mailto:irfnrdh@gmail.com" 
+                       class="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 dark-transition font-medium hover-lift text-lg">
+                        {{ content[currentLang].ctaEmail }}
+                    </a>
+                    <a href="/" 
+                       class="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white dark-transition hover-lift">
+                        {{ content[currentLang].ctaBack }} →
+                    </a>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        const { createApp } = Vue;
+        
+        createApp({
+            data() {
+                return {
+                    currentLang: 'id',
+                    darkMode: false,
+                    content: {
+                        id: {
+                            title: 'Tentang Saya',
+                            intro: 'Saya Irfannur Diah, seorang administrator pendidikan yang memiliki passion di bidang teknologi. Di siang hari, saya membantu mengelola administrasi pendidikan, dan di waktu senggang saya membangun solusi teknologi yang dapat membantu orang lain.<br><br>Perjalanan saya dimulai dari keingintahuan sederhana tentang bagaimana teknologi dapat mempermudah pekerjaan sehari-hari di dunia pendidikan.',
+                            journeyTitle: 'Perjalanan Karir',
+                            journey: [
+                                {
+                                    year: '2025',
+                                    type: 'Sekarang',
+                                    title: 'Full-stack Developer & Education Tech',
+                                    description: 'Fokus pada pengembangan solusi AI untuk creator dan automasi administrasi pendidikan'
+                                },
+                                {
+                                    year: '2023',
+                                    type: 'Karir',
+                                    title: 'Tech Lead - Education Solutions',
+                                    description: 'Memimpin pengembangan sistem administrasi sekolah dan tools untuk guru'
+                                },
+                                {
+                                    year: '2021',
+                                    type: 'Transisi',
+                                    title: 'Mulai Serius dengan Coding',
+                                    description: 'Belajar Vue.js, Node.js, dan mulai membangun aplikasi web pertama'
+                                },
+                                {
+                                    year: '2019',
+                                    type: 'Awal',
+                                    title: 'Administrator Pendidikan',
+                                    description: 'Memulai karir di bidang administrasi pendidikan, menemukan passion untuk otomasi'
+                                },
+                                {
+                                    year: '2018',
+                                    type: 'Pendidikan',
+                                    title: 'Lulus S1 Pendidikan',
+                                    description: 'Menyelesaikan studi dengan fokus pada teknologi pendidikan'
+                                }
+                            ],
+                            skillsTitle: 'Keahlian & Teknologi',
+                            skills: [
+                                {
+                                    category: 'Frontend Development',
+                                    items: [
+                                        { name: 'Vue.js', level: 85 },
+                                        { name: 'JavaScript', level: 80 },
+                                        { name: 'HTML/CSS', level: 90 },
+                                        { name: 'Tailwind CSS', level: 85 }
+                                    ]
+                                },
+                                {
+                                    category: 'Backend & Database',
+                                    items: [
+                                        { name: 'Node.js', level: 75 },
+                                        { name: 'Express.js', level: 70 },
+                                        { name: 'MongoDB', level: 65 },
+                                        { name: 'API Development', level: 80 }
+                                    ]
+                                },
+                                {
+                                    category: 'Education & Management',
+                                    items: [
+                                        { name: 'Education Administration', level: 95 },
+                                        { name: 'Project Management', level: 85 },
+                                        { name: 'Process Automation', level: 90 },
+                                        { name: 'Team Leadership', level: 80 }
+                                    ]
+                                }
+                            ],
+                            valuesTitle: 'Nilai & Filosofi',
+                            values: [
+                                {
+                                    icon: '🎯',
+                                    title: 'Problem Solving First',
+                                    description: 'Saya percaya teknologi harus menyelesaikan masalah nyata, bukan sekedar mengikuti trend'
+                                },
+                                {
+                                    icon: '🤝',
+                                    title: 'Kolaborasi & Sharing',
+                                    description: 'Pengetahuan yang dibagi akan berkembang. Saya senang berbagi dan belajar bersama'
+                                },
+                                {
+                                    icon: '📚',
+                                    title: 'Continuous Learning',
+                                    description: 'Dunia teknologi berubah cepat. Saya selalu berusaha untuk terus belajar dan beradaptasi'
+                                },
+                                {
+                                    icon: '🌱',
+                                    title: 'Growth Mindset',
+                                    description: 'Setiap tantangan adalah kesempatan untuk berkembang dan menjadi versi yang lebih baik'
+                                }
+                            ],
+                            behindTitle: 'Behind the Scenes',
+                            behindPhotos: [
+                                { placeholder: 'Workspace Setup', alt: 'My daily workspace' },
+                                { placeholder: 'Coffee & Code', alt: 'Morning coding session' },
+                                { placeholder: 'Team Meeting', alt: 'Discussing with education team' },
+                                { placeholder: 'Side Project', alt: 'Working on weekend project' }
+                            ],
+                            behindDesc: 'Sebagian besar waktu saya dihabiskan di depan laptop, tapi saya juga suka menghabiskan waktu dengan keluarga dan menjelajahi alam. Saya percaya keseimbangan hidup penting untuk produktivitas jangka panjang.<br><br>Weekend biasanya saya gunakan untuk eksperimen dengan teknologi baru atau berkontribusi pada project open source.',
+                            factsTitle: 'Fun Facts',
+                            facts: [
+                                { value: '50+', label: 'Projects Completed' },
+                                { value: '5+', label: 'Years Experience' },
+                                { value: '∞', label: 'Cups of Coffee' },
+                                { value: '24/7', label: 'Learning Mode' }
+                            ],
+                            ctaTitle: 'Mari Berkolaborasi',
+                            ctaDesc: 'Punya ide menarik atau butuh bantuan dengan project teknologi pendidikan? Saya selalu terbuka untuk diskusi dan kolaborasi.',
+                            ctaEmail: 'Email Saya',
+                            ctaBack: 'Kembali ke Home'
+                        },
+                        en: {
+                            title: 'About Me',
+                            intro: 'I\'m Irfannur Diah, an education administrator with a passion for technology. By day, I help manage educational administration, and in my spare time, I build technology solutions that can help others.<br><br>My journey started from simple curiosity about how technology can simplify daily work in the education world.',
+                            journeyTitle: 'Career Journey',
+                            journey: [
+                                {
+                                    year: '2025',
+                                    type: 'Present',
+                                    title: 'Focus on Profit By Design',
+                                    description: 'Focused on developing AI solutions for Profit Design crafting digital systems that convert ideas into income'
+                                },
+                                {
+                                    year: '2024',
+                                    type: 'Career',
+                                    title: 'Contract-based Civil Servant - First-Level Computer Specialist ',
+                                    description: 'Leading development of school administration systems and teacher tools'
+                                },
+                                {
+                                    year: '2021',
+                                    type: 'Transition',
+                                    title: 'Getting Serious with Coding',
+                                    description: 'Learning Vue.js, Node.js, and started building my first web applications'
+                                },
+                                {
+                                    year: '2019',
+                                    type: 'Beginning',
+                                    title: 'Education Administrator',
+                                    description: 'Started career in educational administration, discovered passion for automation'
+                                },
+                                {
+                                    year: '2018',
+                                    type: 'Education',
+                                    title: 'Graduated from University',
+                                    description: 'Completed studies with focus on educational (S.Pd) & technology (S.Kom)'
+                                }
+                            ],
+                            skillsTitle: 'Skills & Technologies',
+                            skills: [
+                                {
+                                    category: 'Frontend Development',
+                                    items: [
+                                        { name: 'Vue.js', level: 85 },
+                                        { name: 'JavaScript', level: 80 },
+                                        { name: 'HTML/CSS', level: 90 },
+                                        { name: 'Tailwind CSS', level: 85 }
+                                    ]
+                                },
+                                {
+                                    category: 'Backend & Database',
+                                    items: [
+                                        { name: 'Node.js', level: 75 },
+                                        { name: 'Express.js', level: 70 },
+                                        { name: 'MongoDB', level: 65 },
+                                        { name: 'API Development', level: 80 }
+                                    ]
+                                },
+                                {
+                                    category: 'Education & Management',
+                                    items: [
+                                        { name: 'Education Administration', level: 95 },
+                                        { name: 'Project Management', level: 85 },
+                                        { name: 'Process Automation', level: 90 },
+                                        { name: 'Team Leadership', level: 80 }
+                                    ]
+                                }
+                            ],
+                            valuesTitle: 'Values & Philosophy',
+                            values: [
+                                {
+                                    icon: '🎯',
+                                    title: 'Problem Solving First',
+                                    description: 'I believe technology should solve real problems, not just follow trends'
+                                },
+                                {
+                                    icon: '🤝',
+                                    title: 'Collaboration & Sharing',
+                                    description: 'Knowledge shared is knowledge multiplied. I love sharing and learning together'
+                                },
+                                {
+                                    icon: '📚',
+                                    title: 'Continuous Learning',
+                                    description: 'The tech world changes fast. I always strive to keep learning and adapting'
+                                },
+                                {
+                                    icon: '🌱',
+                                    title: 'Growth Mindset',
+                                    description: 'Every challenge is an opportunity to grow and become a better version of myself'
+                                }
+                            ],
+                            behindTitle: 'Behind the Scenes',
+                            behindPhotos: [
+                                { placeholder: 'Workspace Setup', alt: 'My daily workspace', src: "https://lh3.googleusercontent.com/p/AF1QipNEA_jL0lISM5NDxDhcLgfhdpBA9FN5M3UBqljk=s680-w680-h510-rw" },
+                                { placeholder: 'Coffee & Code', alt: 'Morning coding session' },
+                                { placeholder: 'Team Meeting', alt: 'Discussing with education team' },
+                                { placeholder: 'Side Project', alt: 'Working on weekend project' }
+                            ],
+                            behindDesc: 'Most of my time is spent in front of a laptop, but I also enjoy spending time with family and exploring nature. I believe life balance is important for long-term productivity.<br><br>Weekends are usually for experimenting with new technologies or contributing to open source projects.',
+                            factsTitle: 'Fun Facts',
+                            facts: [
+                                { value: '50+', label: 'Projects Experience' },
+                                { value: '5+', label: 'Years Experience' },
+                                { value: '∞', label: 'Cups of Coffee' },
+                                { value: '24/7', label: 'Learning Mode' }
+                            ],
+                            ctaTitle: 'Let\'s Collaborate',
+                            ctaDesc: 'Have an interesting idea or need help with an educational technology project? I\'m always open for discussion and collaboration.',
+                            ctaEmail: 'Email Me',
+                            ctaBack: 'Back to Home'
+                        }
+                    }
+                };
+            },
+            created() {
+                 // Check for saved theme preference or use system preference
+                    if (localStorage.getItem('darkMode')) {
+                        this.darkMode = localStorage.getItem('darkMode') === 'true';
+                    } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                        this.darkMode = true;
+                    }
+                    
+                    // Apply the theme
+                    this.applyTheme();
+                    
+                    // Check for saved language preference
+                    if (localStorage.getItem('preferredLang')) {
+                        this.currentLang = localStorage.getItem('preferredLang');
+                    }
+            },
+            methods: {
+                toggleDarkMode() {
+                    this.darkMode = !this.darkMode;
+                    localStorage.setItem('darkMode', this.darkMode);
+                    this.applyTheme();
+                },
+                applyTheme() {
+                    if (this.darkMode) {
+                        document.documentElement.classList.add('dark');
+                    } else {
+                        document.documentElement.classList.remove('dark');
+                    }
+                }
+            },
+            watch: {
+                currentLang(newLang) {
+                    localStorage.setItem('preferredLang', newLang);
+                }
+            }
+        }).mount('#app');
+    </script>
+</body>
+</html>
