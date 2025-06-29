@@ -6,6 +6,7 @@
     <title>Hi, It's me @irfnrdh</title>
     <meta name="description" content="Education administrator who builds technology solutions">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>👨‍💻</text></svg>">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@800&display=swap" rel="stylesheet">
     
     <!-- Production build of Tailwind CSS -->
     <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
@@ -13,7 +14,14 @@
     <script src="https://unpkg.com/vue@3.2.47/dist/vue.global.prod.js"></script>
     <script src="https://www.youtube.com/iframe_api"></script>
     
+    
     <style>
+
+        hfont {
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 800;
+        }
+        
         * {
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
@@ -301,7 +309,7 @@
     
     <!-- Konten -->
     <div class="left-aligned-container px-4 md:px-8 mobile-padding fade-in hover-content hover:text-white">
-        <h1 class="text-4xl md:text-5xl lg:text-9xl font-light mb-6 md:mb-8 leading-tight dark:text-white font-black ">
+        <h1 class="text-4xl md:text-5xl lg:text-9xl font-light mb-6 md:mb-8 leading-tight dark:text-white font-black hfont">
             {{ content[currentLang].greeting }}.
             
 
