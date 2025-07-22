@@ -1,0 +1,1252 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit Pelayanan Terpadu - Dinas Pendidikan dan Kebudayaan</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <div id="app">
+        <!-- Header -->
+    <!-- Header dengan tracking section -->
+<div class="sticky top-0 z-50">
+    <!-- Header -->
+    <header class="bg-gradient-to-r from-blue-600 to-blue-800 text-white shadow-lg">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <!-- Logo dan Judul -->
+                <a href="file:///home/irfnrdh/SatuData/Nexus/1_projects/2025-website-disdikbud/index3.html">
+                    <div class="flex items-center space-x-4">
+                        <i class="fas fa-school text-3xl rounded-lg bg-blue-700 py-3 px-3"></i>
+                        <div>
+                            <h1 class="text-xl font-bold">Unit Pelayanan Terpadu</h1>
+                            <p class="text-blue-100 text-xs">Dinas Pendidikan dan Kebudayaan <br> Kabupaten Aceh Tamiang</p>
+                        </div>
+                    </div>
+                </a>
+
+                <!-- Menu Navigasi (untuk desktop) -->
+                <nav class="hidden md:block">
+                    <ul class="flex space-x-6">
+                        <li><a href="#" class="hover:text-blue-200 transition">Beranda</a></li>
+                        <li><a href="#" class="hover:text-blue-200 transition">Layanan</a></li>
+                        <li><a href="#" class="hover:text-blue-200 transition">Informasi</a></li>
+                        <li><a href="#" class="hover:text-blue-200 transition">Kontak</a></li>
+                    </ul>
+                </nav>
+
+
+                <!-- Tambahkan di bagian header -->
+<div class="md:hidden">
+    <!-- Hamburger menu untuk mobile -->
+    <button @click="mobileMenuOpen = !mobileMenuOpen" class="text-white p-2">
+        <i :class="['fas', mobileMenuOpen ? 'fa-times' : 'fa-bars']"></i>
+    </button>
+    
+    <!-- Mobile menu dropdown -->
+    <div v-if="mobileMenuOpen" class="absolute top-full left-0 right-0 bg-blue-800 shadow-lg">
+        <nav>
+            <ul class="space-y-2 p-4">
+                <li><a href="#" class="block py-2 hover:bg-blue-700 px-4 rounded">Beranda</a></li>
+                <li><a href="#" class="block py-2 hover:bg-blue-700 px-4 rounded">Layanan</a></li>
+                <li><a href="#" class="block py-2 hover:bg-blue-700 px-4 rounded">Informasi</a></li>
+                <li><a href="#" class="block py-2 hover:bg-blue-700 px-4 rounded">Kontak</a></li>
+            </ul>
+        </nav>
+    </div>
+</div>
+
+
+            </div>
+        </div>
+    </header>
+
+   
+</div>
+
+ <!-- Tracking Section -->
+    <div class="bg-blue-50">
+        <div class="container mx-auto px-4 py-3">
+            <div class="flex flex-col md:flex-row items-center justify-between">
+                <h3 class="font-medium text-gray-900 mb-2 md:mb-0">Lacak Status Permohonan</h3>
+                <div class="flex w-full md:w-auto">
+                    <input 
+                        v-model="trackingNumber"
+                        placeholder="Masukkan nomor tiket"
+                        class="flex-1 md:w-64 px-3 py-2 border border-gray-300 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    >
+                    <button 
+                        @click="trackRequest"
+                        class="bg-blue-600 text-white px-4 py-2 rounded-r-lg hover:bg-blue-700 transition"
+                    >
+                        Lacak
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+        <!-- Search Bar -->
+        <div class="bg-white shadow-sm border-b">
+            <div class="container mx-auto px-4 py-4">
+                <div class="relative">
+                    <input 
+                        v-model="searchQuery" 
+                        type="text" 
+                        placeholder="Cari layanan yang Anda butuhkan..."
+                        class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    >
+                    <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Category Filter -->
+        <div class="bg-white shadow-sm">
+            <div class="container mx-auto px-4 py-4">
+                <div class="flex flex-wrap gap-2">
+                    <button 
+                        v-for="category in categories" 
+                        :key="category"
+                        @click="selectedCategory = selectedCategory === category ? '' : category"
+                        :class="[
+                            'px-4 py-2 rounded-full text-sm font-medium transition-all duration-200',
+                            selectedCategory === category 
+                                ? 'bg-blue-600 text-white shadow-md' 
+                                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                        ]"
+                    >
+                        {{ category }}
+                        <span class="ml-1 text-xs opacity-75">({{ getCategoryCount(category) }})</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Services Grid -->
+        <div class="container mx-auto px-4 py-6">
+            <div class="grid gap-4 lg:grid-cols-3">
+                <div 
+                    v-for="service in filteredServices" 
+                    :key="service.name"
+                    class="bg-white rounded-lg shadow-md border hover:shadow-lg transition-shadow duration-200"
+                >
+                    <div class="p-6">
+                        <div class="flex items-start justify-between mb-3">
+                            <div class="flex-1">
+                                <h3 class="text-lg font-semibold text-gray-900 mb-2">{{ service.name }}</h3>
+                                <div class="flex flex-wrap gap-2 mb-3">
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                        <i class="fas fa-layer-group mr-1"></i>
+                                        {{ service.category }}
+                                    </span>
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                        <i class="fas fa-building mr-1"></i>
+                                        {{ service.unit }}
+                                    </span>
+                                </div>
+                                <p class="text-gray-600 text-sm">{{ getServiceDescription(service.name) }}</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex flex-col sm:flex-row gap-3 mt-4">
+                            <button 
+                                @click="openServiceModal(service)"
+                                class="flex-1 bg-blue-600 text-white px-4 py-2.5 rounded-lg hover:bg-blue-700 transition-colors duration-200 font-medium"
+                            >
+                                <i class="fas fa-file-alt mr-2"></i>
+                                Ajukan Permohonan
+                            </button>
+                            <button 
+                                @click="showServiceInfo(service)"
+                                class="flex-1 bg-gray-100 text-gray-700 px-4 py-2.5 rounded-lg hover:bg-gray-200 transition-colors duration-200 font-medium"
+                            >
+                                <i class="fas fa-info-circle mr-2"></i>
+                                Info & Syarat
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Empty State -->
+            <div v-if="filteredServices.length === 0" class="text-center py-12">
+                <i class="fas fa-search text-4xl text-gray-400 mb-4"></i>
+                <h3 class="text-lg font-medium text-gray-900 mb-2">Layanan tidak ditemukan</h3>
+                <p class="text-gray-600">Coba gunakan kata kunci lain atau pilih kategori yang berbeda</p>
+                <button 
+                    @click="resetFilters" 
+                    class="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                >
+                    Reset Pencarian
+                </button>
+            </div>
+        </div>
+
+        <!-- FAQ Section -->
+        <div class="container mx-auto px-4 py-8">
+            <h2 class="text-2xl font-bold text-gray-900 mb-6">Pertanyaan Umum (FAQ)</h2>
+            <div class="space-y-4">
+                <div v-for="(faq, index) in faqs" :key="index" class="border-b border-gray-200 pb-4">
+                    <button 
+                        @click="toggleFAQ(index)"
+                        class="flex justify-between items-center w-full text-left font-medium text-gray-700 hover:text-blue-600 focus:outline-none"
+                    >
+                        <span>{{ faq.question }}</span>
+                        <i :class="['fas', faq.open ? 'fa-minus' : 'fa-plus', 'text-blue-500']"></i>
+                    </button>
+                    <div v-show="faq.open" class="mt-2 text-gray-600">
+                        {{ faq.answer }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- User Guide -->
+        <div class="container mx-auto px-4 py-8 bg-gray-50 rounded-lg my-6">
+            <h2 class="text-2xl font-bold text-gray-900 mb-6">Panduan Penggunaan</h2>
+            <div class="grid md:grid-cols-3 gap-6">
+                <div v-for="(step, index) in userGuide" :key="index" class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+                    <div class="flex items-center mb-4">
+                        <div class="bg-blue-100 text-blue-800 rounded-full h-10 w-10 flex items-center justify-center mr-3">
+                            {{ index + 1 }}
+                        </div>
+                        <h3 class="font-medium text-lg">{{ step.title }}</h3>
+                    </div>
+                    <p class="text-gray-600">{{ step.description }}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contact Section -->
+        <div class="container mx-auto px-4 py-8">
+            <h2 class="text-2xl font-bold text-gray-900 mb-6">Kontak & Bantuan</h2>
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div v-for="contact in contacts" :key="contact.name" class="bg-white p-6 rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
+                    <div class="flex items-center mb-3">
+                        <div :class="['rounded-full h-10 w-10 flex items-center justify-center mr-3', contact.bgColor]">
+                            <i :class="['fas', contact.icon, 'text-white']"></i>
+                        </div>
+                        <h3 class="font-medium">{{ contact.name }}</h3>
+                    </div>
+                    <p class="text-gray-600 text-sm mb-2">{{ contact.description }}</p>
+                    <a :href="contact.link" class="text-blue-600 hover:underline">{{ contact.value }}</a>
+                </div>
+            </div>
+        </div>
+
+        <footer class="bg-gray-800 text-white pt-12 pb-6">
+  <div class="container mx-auto px-4">
+    <!-- Grid Layout Footer -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+      
+      <!-- Logo dan Deskripsi -->
+      <div class="col-span-1">
+        <div class="flex items-center mb-4">
+          <i class="fas fa-school text-3xl bg-blue-700 p-2 rounded-lg mr-3"></i>
+          <div>
+            <h3 class="font-bold text-lg">Unit Pelayanan Terpadu</h3>
+            <p class="text-sm text-gray-300">Dikbud Aceh Tamiang</p>
+          </div>
+        </div>
+        <p class="text-gray-400 text-sm">
+          Layanan terpadu untuk mempermudah administrasi pendidikan dan kebudayaan di Kabupaten Aceh Tamiang.
+        </p>
+      </div>
+
+      <!-- Tautan Cepat -->
+      <div>
+        <h4 class="text-lg font-semibold mb-4 border-b border-gray-700 pb-2">Tautan Cepat</h4>
+        <ul class="space-y-2">
+          <li><a href="#" class="text-gray-400 hover:text-blue-400 transition">Beranda</a></li>
+          <li><a href="#" class="text-gray-400 hover:text-blue-400 transition">Lacak Permohonan</a></li>
+          <li><a href="#" class="text-gray-400 hover:text-blue-400 transition">Daftar Layanan</a></li>
+          <li><a href="#" class="text-gray-400 hover:text-blue-400 transition">FAQ</a></li>
+          <li><a href="#" class="text-gray-400 hover:text-blue-400 transition">Kontak</a></li>
+        </ul>
+      </div>
+
+      <!-- Kontak -->
+      <div>
+        <h4 class="text-lg font-semibold mb-4 border-b border-gray-700 pb-2">Hubungi Kami</h4>
+        <ul class="space-y-3">
+          <li class="flex items-start">
+            <i class="fas fa-map-marker-alt mt-1 mr-3 text-blue-400"></i>
+            <span class="text-gray-400 text-sm">
+              Komplek Perkantoran Pemkab Aceh Tamiang, Desa Bundar, Kec. Karang Baru
+            </span>
+          </li>
+          <li class="flex items-center">
+            <i class="fas fa-phone-alt mr-3 text-blue-400"></i>
+            <span class="text-gray-400">(0641) 1234567</span>
+          </li>
+          <li class="flex items-center">
+            <i class="fas fa-envelope mr-3 text-blue-400"></i>
+            <span class="text-gray-400">upt@disdikbud.acehtamiangkab.go.id</span>
+          </li>
+          <li class="flex items-center">
+            <i class="fab fa-whatsapp mr-3 text-blue-400"></i>
+            <span class="text-gray-400">0812-3456-7890</span>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Jam Operasional -->
+      <div>
+        <h4 class="text-lg font-semibold mb-4 border-b border-gray-700 pb-2">Jam Layanan</h4>
+        <ul class="space-y-3 text-gray-400 text-sm">
+          <li class="flex justify-between">
+            <span>Senin-Kamis</span>
+            <span>08:00 - 16:00 WIB</span>
+          </li>
+          <li class="flex justify-between">
+            <span>Jumat</span>
+            <span>08:00 - 17:00 WIB</span>
+          </li>
+          <li class="flex justify-between">
+            <span>Sabtu-Minggu</span>
+            <span class="text-red-400">Tutup</span>
+          </li>
+        </ul>
+        
+        <!-- Sosial Media -->
+        <div class="mt-6">
+          <h4 class="text-lg font-semibold mb-3 border-b border-gray-700 pb-2">Media Sosial</h4>
+          <div class="flex space-x-4">
+            <a href="#" class="bg-gray-700 hover:bg-blue-600 w-10 h-10 rounded-full flex items-center justify-center transition">
+              <i class="fab fa-facebook-f"></i>
+            </a>
+            <a href="#" class="bg-gray-700 hover:bg-blue-400 w-10 h-10 rounded-full flex items-center justify-center transition">
+              <i class="fab fa-twitter"></i>
+            </a>
+            <a href="#" class="bg-gray-700 hover:bg-pink-600 w-10 h-10 rounded-full flex items-center justify-center transition">
+              <i class="fab fa-instagram"></i>
+            </a>
+            <a href="#" class="bg-gray-700 hover:bg-green-500 w-10 h-10 rounded-full flex items-center justify-center transition">
+              <i class="fab fa-whatsapp"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer Bottom -->
+    <div class="border-t border-gray-700 pt-6 flex flex-col md:flex-row justify-between items-center">
+      <p class="text-gray-500 text-sm mb-4 md:mb-0">
+        © 2023 Dinas Pendidikan dan Kebudayaan Kabupaten Aceh Tamiang. All rights reserved.
+      </p>
+      <div class="flex space-x-6">
+        <a href="#" class="text-gray-500 hover:text-white text-sm">Kebijakan Privasi</a>
+        <a href="#" class="text-gray-500 hover:text-white text-sm">Syarat & Ketentuan</a>
+        <a href="#" class="text-gray-500 hover:text-white text-sm">Peta Situs</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+
+
+        <!-- Service Modal -->
+        <div 
+            v-if="showModal" 
+            class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+            @click="closeModal"
+        >
+            <div 
+                class="bg-white  shadow-xl w-full h-full overflow-y-auto"
+                @click.stop
+            >
+                <div class="p-6 border-b">
+                    <div class="flex justify-between items-start">
+                    <!--     <div class="flex flex-row gap-3 ">
+                        <button @click="closeModal" class="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400 transition-colors">
+                            Batal
+                        </button>
+                        </div>
+                         -->
+
+                            <div>
+                                <h2 class="text-xl font-bold text-gray-900">{{ selectedService?.name }}</h2>
+                                <p class="text-sm text-gray-600 mt-1">{{ selectedService?.category }} - {{ selectedService?.unit }}</p>
+                            </div>
+                        <button @click="closeModal" class="text-gray-400 hover:text-gray-600">
+                            <i class="fas fa-times text-xl"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="p-6 space-y-6">
+                    <!-- Service Info Tab -->
+                    <div v-if="activeTab === 'info'">
+                        <h3 class="text-lg font-semibold mb-4">Informasi Layanan</h3>
+                        <div class="space-y-4">
+                            <div>
+                                <h4 class="font-medium text-gray-900 mb-2">Deskripsi:</h4>
+                                <p class="text-gray-700">{{ getServiceDescription(selectedService?.name) }}</p>
+                            </div>
+                            <div>
+                                <h4 class="font-medium text-gray-900 mb-2">Syarat-syarat:</h4>
+                                <ul class="list-disc pl-5 text-gray-700 space-y-1">
+                                    <li v-for="req in getServiceRequirements(selectedService?.name)" :key="req">{{ req }}</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h4 class="font-medium text-gray-900 mb-2">Waktu Pemrosesan:</h4>
+                                <p class="text-gray-700">{{ getProcessingTime(selectedService?.name) }}</p>
+                            </div>
+                        
+
+ <h3 class="text-lg font-semibold mb-4">Panduan:</h3>
+
+<div class="mt-4">
+  <a 
+    :href="getServiceDocumentation(selectedService.name)"
+    target="_blank"
+    class="text-blue-600 hover:underline flex items-center"
+  >
+    <i class="fas fa-file-pdf mr-2"></i>
+    Download Panduan Lengkap Layanan Ini
+  </a>
+</div>
+
+                            <!-- Tambahkan di service modal (info tab) -->
+<div class="mt-6">
+  <h4 class="font-medium text-gray-900 mb-3">Pertanyaan Umum tentang Layanan Ini</h4>
+  <div class="space-y-3 ">
+    <div v-for="(faq, index) in getServiceFaqs(selectedService.name)" :key="index">
+      <button @click="toggleServiceFaq(index)" class="flex justify-between w-full text-left pl-4">
+        <span class="text-blue-600 hover:text-blue-800">{{ faq.question }}</span>
+        <i :class="faq.open ? 'fas fa-minus' : 'fas fa-plus'"></i>
+      </button>
+      <div v-show="faq.open" class="mt-1 text-gray-600 text-sm pl-4">
+        {{ faq.answer }}
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Tambahkan di service modal (info tab) -->
+<div class="mt-6 border-t pt-4">
+  <h4 class="font-medium text-gray-900 mb-3">Ajukan Pertanyaan Khusus</h4>
+  <textarea 
+    v-model="serviceQuestion"
+    placeholder="Tulis pertanyaan spesifik Anda tentang layanan ini"
+    class="w-full px-3 py-2 border border-gray-300 rounded-md mb-2"
+    rows="3"
+  ></textarea>
+  <button 
+    @click="submitServiceQuestion"
+    class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
+  >
+    Kirim Pertanyaan
+  </button>
+</div>
+
+
+
+
+    <div class="mt-6 bg-blue-50 p-4 rounded-lg">
+                              <h4 class="font-medium text-gray-900 mb-2">Butuh bantuan khusus tentang layanan ini?</h4>
+                              <button 
+                                @click="startServiceChat(selectedService)"
+                                class="flex items-center text-blue-600 hover:text-blue-800"
+                              >
+                                <i class="fas fa-comments mr-2"></i>
+                                Tanya via Live Chat
+                              </button>
+                            </div>
+
+
+
+                        </div>
+                    </div>
+
+                    <!-- Form Tab -->
+                    <div v-if="activeTab === 'form'">
+                        <form @submit.prevent="submitForm" class="space-y-4">
+                            <!-- Dynamic Form Fields Based on Service Type -->
+                            <div v-for="field in getFormFields(selectedService?.name)" :key="field.name" class="space-y-1">
+                                <label class="block text-sm font-medium text-gray-700 mb-1">
+                                    {{ field.label }}
+                                    <span v-if="field.required" class="text-red-500">*</span>
+                                </label>
+                                
+                                <!-- Text Input -->
+                                <input 
+                                    v-if="field.type === 'text' || field.type === 'tel' || field.type === 'email' || field.type === 'number'"
+                                    :type="field.type"
+                                    :required="field.required"
+                                    :placeholder="field.placeholder"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                />
+                                
+                                <!-- Select Dropdown -->
+                                <select 
+                                    v-if="field.type === 'select'"
+                                    :required="field.required"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                >
+                                    <option value="">{{ field.placeholder }}</option>
+                                    <option v-for="option in field.options" :key="option" :value="option">{{ option }}</option>
+                                </select>
+                                
+                                <!-- Textarea -->
+                                <textarea 
+                                    v-if="field.type === 'textarea'"
+                                    :required="field.required"
+                                    :placeholder="field.placeholder"
+                                    :rows="field.rows || 3"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                ></textarea>
+                                
+                                <!-- Date Input -->
+                                <input 
+                                    v-if="field.type === 'date'"
+                                    type="date"
+                                    :required="field.required"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                />
+                                
+                                <!-- File Upload -->
+                                <div v-if="field.type === 'file'">
+                                    <input 
+                                        type="file"
+                                        :multiple="field.multiple"
+                                        :accept="field.accept"
+                                        :required="field.required"
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                    />
+                                    <p v-if="field.note" class="text-xs text-gray-500 mt-1">{{ field.note }}</p>
+                                </div>
+                                
+                                <!-- Checkbox -->
+                                <div v-if="field.type === 'checkbox'" class="flex items-center space-x-2">
+                                    <input 
+                                        type="checkbox"
+                                        :required="field.required"
+                                        class="rounded border-gray-300 focus:ring-2 focus:ring-blue-500"
+                                    />
+                                    <span class="text-sm text-gray-700">{{ field.checkboxText }}</span>
+                                </div>
+                                
+                                <p v-if="field.help" class="text-xs text-gray-500 mt-1">{{ field.help }}</p>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Modal Footer -->
+                <div class="p-6 border-t bg-gray-50">
+                    <div class="flex space-x-2 mb-4">
+                        <button 
+                            @click="activeTab = 'info'"
+                            :class="[
+                                'px-4 py-2 rounded-md font-medium transition-colors',
+                                activeTab === 'info' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                            ]"
+                        >
+                            Info & Syarat
+                        </button>
+                        <button 
+                            @click="activeTab = 'form'"
+                            :class="[
+                                'px-4 py-2 rounded-md font-medium transition-colors',
+                                activeTab === 'form' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                            ]"
+                        >
+                            Form Permohonan
+                        </button>
+
+                    </div>
+                    <div class="flex justify-between">
+                        <button @click="closeModal" class="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400 transition-colors">
+                            Batal
+                        </button>
+                        <button 
+                            v-if="activeTab === 'form'"
+                            @click="submitForm" 
+                            class="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors font-medium"
+                        >
+                            <i class="fas fa-paper-plane mr-2"></i>
+                            Kirim Permohonan
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chat Box -->
+        <div v-if="showChat" class="fixed bottom-32 right-6 w-80 bg-white rounded-lg shadow-xl border border-gray-200 z-50">
+            <div class="bg-green-600 text-white p-3 rounded-t-lg flex justify-between items-center">
+                <h3 class="font-medium">Butuh Bantuan?</h3>
+                <button @click="toggleChat" class="text-white hover:text-gray-200">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="p-4 h-64 overflow-y-auto">
+                <div v-for="(msg, index) in chatMessages" :key="index" :class="['mb-3', msg.sender === 'user' ? 'text-right' : 'text-left']">
+                    <div :class="['inline-block px-3 py-2 rounded-lg', msg.sender === 'user' ? 'bg-blue-100 text-blue-900' : 'bg-gray-100 text-gray-900']">
+                        {{ msg.text }}
+                    </div>
+                </div>
+            </div>
+            <div class="p-3 border-t">
+                <div class="flex">
+                    <input 
+                        v-model="chatInput" 
+                        @keyup.enter="sendChatMessage"
+                        placeholder="Ketik pesan Anda..."
+                        class="flex-1 border border-gray-300 rounded-l-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+                    >
+                    <button 
+                        @click="sendChatMessage"
+                        class="bg-green-600 text-white px-4 py-2 rounded-r-lg hover:bg-green-700"
+                    >
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Notification Panel -->
+        <div v-if="showNotifications" class="fixed bottom-48 right-6 w-72 bg-white rounded-lg shadow-xl border border-gray-200 z-50 max-h-96 overflow-y-auto">
+            <div class="bg-yellow-500 text-white p-3 rounded-t-lg flex justify-between items-center">
+                <h3 class="font-medium">Notifikasi</h3>
+                <button @click="toggleNotifications" class="text-white hover:text-gray-200">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div v-if="notifications.length > 0">
+                <div v-for="(notif, index) in notifications" :key="index" 
+                     class="p-3 border-b hover:bg-gray-50 cursor-pointer"
+                     @click="viewNotification(notif)">
+                    <div class="flex justify-between">
+                        <h4 class="font-medium text-gray-900">{{ notif.title }}</h4>
+                        <span class="text-xs text-gray-500">{{ formatDate(notif.date) }}</span>
+                    </div>
+                    <p class="text-sm text-gray-600 mt-1">{{ notif.message }}</p>
+                </div>
+            </div>
+            <div v-else class="p-4 text-center text-gray-500">
+                Tidak ada notifikasi
+            </div>
+        </div>
+
+        <!-- Floating Action Buttons -->
+        <div class="fixed bottom-6 right-6 flex flex-col space-y-3 w-[50px]">
+            <!-- Help Button -->
+            <button 
+                @click="toggleChat"
+                class="bg-green-600 text-white p-3 rounded-full shadow-lg hover:bg-green-700 transition-colors flex items-cente"
+       
+            >
+                     <!-- class="bg-green-600 text-white p-3 rounded-full shadow-lg hover:bg-green-700 transition-colors flex items-center" -->
+                <i class="fas fa-comment-dots "></i>
+                <!-- Bantuan mr-2-->
+            </button>
+
+            <!-- Notification Button -->
+            <button 
+                @click="toggleNotifications"
+                class="relative bg-yellow-500 text-white p-3 rounded-full shadow-lg hover:bg-yellow-600 transition-colors"
+            >
+                <i class="fas fa-bell"></i>
+                <span v-if="unreadNotifications" class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                    {{ unreadNotifications }}
+                </span>
+            </button>
+
+            <!-- Scroll to Top Button -->
+            <button 
+                @click="scrollToTop"
+                class="bg-blue-600 text-white p-3 rounded-full shadow-lg hover:bg-blue-700 transition-colors"
+            >
+                <i class="fas fa-chevron-up"></i>
+            </button>
+        </div>
+    </div>
+
+    
+<script>
+    // Script untuk efek scroll (opsional)
+    window.addEventListener('scroll', function() {
+        const headerWrapper = document.querySelector('.sticky');
+        if (window.scrollY > 50) {
+            headerWrapper.classList.add('shadow-xl');
+            document.querySelector('header').classList.add('py-2');
+            document.querySelector('.bg-blue-50').classList.add('py-2');
+        } else {
+            headerWrapper.classList.remove('shadow-xl');
+            document.querySelector('header').classList.remove('py-2');
+            document.querySelector('.bg-blue-50').classList.remove('py-2');
+        }
+    });
+</script>
+
+    <script>
+        const { createApp } = Vue;
+
+        createApp({
+            data() {
+                return {
+                    searchQuery: '',
+                    selectedCategory: '',
+                    showModal: false,
+                    selectedService: null,
+                    activeTab: 'info',
+                    trackingNumber: '',
+                    showChat: false,
+                    chatInput: '',
+                    chatMessages: [
+                        { text: 'Halo! Ada yang bisa saya bantu?', sender: 'bot' }
+                    ],
+                    showNotifications: false,
+                    unreadNotifications: 1,
+                    notifications: [
+                        { 
+                            title: 'Permohonan Diterima', 
+                            message: 'Permohonan SKTP Anda telah diterima dan sedang diproses', 
+                            date: new Date(), 
+                            read: false,
+                            link: '/track/123'
+                        }
+                    ],
+                    faqs: [
+                        {
+                            question: "Bagaimana cara melacak status permohonan saya?",
+                            answer: "Anda dapat melacak status permohonan melalui nomor tiket yang diberikan saat pengajuan di halaman 'Lacak Permohonan'.",
+                            open: false
+                        },
+                        {
+                            question: "Berapa lama waktu proses layanan?",
+                            answer: "Waktu proses bervariasi tergantung jenis layanan, umumnya 3-7 hari kerja setelah dokumen lengkap diterima.",
+                            open: false
+                        },
+                        {
+                            question: "Apa saja dokumen yang perlu dipersiapkan?",
+                            answer: "Setiap layanan memiliki persyaratan dokumen yang berbeda. Anda dapat melihat daftar lengkapnya di bagian 'Info & Syarat' pada layanan yang dipilih.",
+                            open: false
+                        },
+                        {
+                            question: "Bagaimana jika dokumen saya tidak lengkap?",
+                            answer: "Permohonan akan ditolak atau dipending sampai dokumen lengkap. Anda akan menerima notifikasi melalui email/SMS.",
+                            open: false
+                        }
+                    ],
+                    serviceFaqs: {
+                      'Pelalyanan Pembuatan Pindah Rayon Daerah': [
+                        {
+                          question: "Berapa biaya penggantian ijazah?",
+                          answer: "Biaya penggantian ijazah sebesar Rp 150.000 untuk pergantian karena rusak/kesalahan, dan Rp 300.000 untuk kasus kehilangan.",
+                          open: false
+                        },
+                        // FAQ lainnya
+                      ],
+                      // FAQ untuk layanan lainnya
+                    },
+                    userGuide: [
+                        {
+                            title: 'Cari Layanan',
+                            description: 'Gunakan kotak pencarian atau filter kategori untuk menemukan layanan yang Anda butuhkan'
+                        },
+                        {
+                            title: 'Ajukan Permohonan',
+                            description: 'Klik tombol "Ajukan Permohonan" dan isi formulir dengan data yang valid dan lengkap'
+                        },
+                        {
+                            title: 'Lacak Status',
+                            description: 'Pantau perkembangan permohonan Anda menggunakan nomor tiket yang diberikan'
+                        }
+                    ],
+                    contacts: [
+                        {
+                            name: 'Call Center',
+                            icon: 'fa-phone',
+                            bgColor: 'bg-green-500',
+                            value: '1500-123',
+                            description: 'Layanan telepon 24 jam',
+                            link: 'tel:1500123'
+                        },
+                        {
+                            name: 'Email',
+                            icon: 'fa-envelope',
+                            bgColor: 'bg-blue-500',
+                            value: 'layanan@disdikbud.acehtamiangkab.go.id',
+                            description: 'Respon dalam 1x24 jam',
+                            link: 'mailto:upt@dikbud.go.id'
+                        },
+                        {
+                            name: 'WhatsApp',
+                            icon: 'fa-whatsapp',
+                            bgColor: 'bg-green-500',
+                            value: '0812-3456-7890',
+                            description: 'Senin-Jumat, 08:30-16:00',
+                            link: 'https://wa.me/6281234567890'
+                        },
+                        {
+                            name: 'Lokasi Kantor',
+                            icon: 'fa-map-marker-alt',
+                            bgColor: 'bg-red-500',
+                            value: 'Lihat di Google Maps',
+                            description: 'Kompleks Perkantoran Pemerintah Kabupaten Aceh Tamiang, Desa Bundar, Kecamatan Karang Baru',
+                            link: 'https://maps.google.com'
+                        }
+                    ],
+                    services: [
+                        { name: "Pelalyanan Pembuatan Pindah Rayon Daerah", category: "Pelayanan Administrasi Siswa dan Sekolah", unit: "DIKDAS" },
+                        { name: "Pelalyanan Pembuatan Rekomendasi Mutasi", category: "Pelayanan Administrasi Siswa dan Sekolah", unit: "DIKDAS" },
+                        { name: "Pelayanan Pegantian Ijazah (Kehilangan/rusak/kesalahan Penulisan)", category: "Pelayanan Administrasi Siswa dan Sekolah", unit: "DIKDAS" },
+                        { name: "Pelayanan Pembuatan Dokumen 1", category: "Pelayanan Administrasi Siswa dan Sekolah", unit: "DIKDAS" },
+                        { name: "Pelayanan Penerbitan Rekomendasi Izin Operasional SD/SMP", category: "Perizinan dan Rekomendasi Pendidikan", unit: "DIKDAS" },
+                        { name: "Pelayanan Penerbitan Rekomendasi Izin Pendirian SD/SMP", category: "Perizinan dan Rekomendasi Pendidikan", unit: "DIKDAS" },
+                        { name: "Pelayanan Penerbitan surat keterangan sekolah masih aktif SD/SMP", category: "Perizinan dan Rekomendasi Pendidikan", unit: "DIKDAS" },
+                        { name: "Pelayanan pengimputan aplikasi dapodik jenjang SD dan SMP", category: "Pelayanan Administrasi Siswa dan Sekolah", unit: "DIKDAS" },
+                        { name: "Pelayanan Sarana Prasarana SD", category: "Pengajuan dan Penetapan Bantuan Dana", unit: "DIKDAS" },
+                        { name: "Pelayanan Siswa Yatim Piatu dan Piatu", category: "Pelayanan Administrasi Siswa dan Sekolah", unit: "DIKDAS" },
+                        { name: "Pelayanan Administrasi Uji Kompetensi Kenaikan Jenjang Jabatan Guru", category: "Pelayanan Pendidik dan Tenaga Kependidikan", unit: "GTK" },
+                        { name: "Pelayanan Cuti ASN Guru & Kepala sekolah", category: "Pelayanan Pendidik dan Tenaga Kependidikan", unit: "GTK" },
+                        { name: "Pelayanan Informasi Pendidikan Profesi Guru (PPG) Dalam Jabatan", category: "Pelayanan Pendidik dan Tenaga Kependidikan", unit: "GTK" },
+                        { name: "Pelayanan Kebutahan Ruang Talenta Guru - Seleksi PPPK", category: "Pelayanan Pendidik dan Tenaga Kependidikan", unit: "GTK" },
+                        { name: "Pelayanan Mutasi Guru PNS", category: "Pelayanan Pendidik dan Tenaga Kependidikan", unit: "GTK" },
+                        { name: "Pelayanan Penerbitan Akun SIM Pembelajaran Guru (SIMPKB)", category: "Pelayanan Pendidik dan Tenaga Kependidikan", unit: "GTK" },
+                        { name: "Pelayanan Penerbitan SK Tunjangan Profesi (SKTP) Guru Jenjang Dikdas", category: "Pelayanan Pendidik dan Tenaga Kependidikan", unit: "GTK" },
+                        { name: "Pelayanan Penerbitan SK Tunjangan Profesi (SKTP) Guru Jenjang PAUD", category: "Pelayanan Pendidik dan Tenaga Kependidikan", unit: "GTK" },
+                        { name: "Pelayanan Penerbitan Surat Rekomedasi Perceraian Bagi Guru", category: "Pelayanan Pendidik dan Tenaga Kependidikan", unit: "GTK" },
+                        { name: "Pelayanan Pengelolaan dan Penilaian Kinerja Kepala Sekolah", category: "Pelayanan Pendidik dan Tenaga Kependidikan", unit: "GTK" },
+                        { name: "Pelayanan Rekomendasi Tugas Belajar dan Rekomendasi Menyelesaikan Studi", category: "Pelayanan Pendidik dan Tenaga Kependidikan", unit: "GTK" },
+                        { name: "Pelayanan Sistem Informasi Jabatan Fungsional GTK", category: "Pelayanan Pendidik dan Tenaga Kependidikan", unit: "GTK" },
+                        { name: "Pelayanan Teknis Absensi Guru dan Kepala Sekolah", category: "Pelayanan Pendidik dan Tenaga Kependidikan", unit: "GTK" },
+                        { name: "Pelayanan Validasi Data dan Usulan Insentif Guru Non PNS jenjang DIKDAS", category: "Pelayanan Pendidik dan Tenaga Kependidikan", unit: "GTK" },
+                        { name: "Pelayanan Validasi Data dan Usulan Insentif Guru Non PNS jenjang Non Formal", category: "Pelayanan Pendidik dan Tenaga Kependidikan", unit: "GTK" },
+                        { name: "Pelayanan Validasi Data dan Usulan Insentif Guru Non PNS jenjang PAUD", category: "Pelayanan Pendidik dan Tenaga Kependidikan", unit: "GTK" },
+                        { name: "Pelayanan Validasi Data dan Usulan Tambahan Penghasilan Guru", category: "Pelayanan Pendidik dan Tenaga Kependidikan", unit: "GTK" },
+                        { name: "Pelayanan Validasi Data Pengawas Sekolah (SIMTENDIK)", category: "Pelayanan Pendidik dan Tenaga Kependidikan", unit: "GTK" },
+                        { name: "Pelayanan Validasi Data Seleksi Kepala Sekolah di Sistem Pengangkatan Kepala Sekolah dan Pengawas Sekolah", category: "Pelayanan Pendidik dan Tenaga Kependidikan", unit: "GTK" },
+                        { name: "Pelayanan Verifikasi Peningkatan Kualifikasi Guru (SIPKA)", category: "Pelayanan Pendidik dan Tenaga Kependidikan", unit: "GTK" },
+                        { name: "Pelayanan Verifikasi Verval Ijazah", category: "Pelayanan Pendidik dan Tenaga Kependidikan", unit: "GTK" },
+                        { name: "Pengelolaan Database Pendidik dan Tenaga Kependidikan", category: "Pelayanan Pendidik dan Tenaga Kependidikan", unit: "GTK" },
+                        { name: "Pelayanan Penetapan Cagar Budaya", category: "Pelayanan Kesenian dan Warisan Budaya", unit: "KEBUDAYAAN" },
+                        { name: "Pelayanan Rekomendasi Sanggar", category: "Pelayanan Kesenian dan Warisan Budaya", unit: "KEBUDAYAAN" },
+                        { name: "Pelayanan Warisan Budaya", category: "Pelayanan Kesenian dan Warisan Budaya", unit: "KEBUDAYAAN" },
+                        { name: "Pelayanan Penerbitan Rekomendasi Izin Operasional PAUD/PKBM", category: "Perizinan dan Rekomendasi Pendidikan", unit: "PAUD & PNF" },
+                        { name: "Pelayanan Penerbitan Rekomendasi Izin Pendirian PAUD/PKBM", category: "Perizinan dan Rekomendasi Pendidikan", unit: "PAUD & PNF" },
+                        { name: "Pelayanan pengimputan aplikasi dapodik jenjang PAUD dan PKBM", category: "Pelayanan Pendidik dan Tenaga Kependidikan", unit: "PAUD & PNF" },
+                        { name: "Pelayanan Sarana Prasarana PAUD", category: "Pengajuan dan Penetapan Bantuan Dana", unit: "PAUD & PNF" },
+                        { name: "Pelayanan Cuti ASN Dinas Pendidikan/TU Sekolah", category: "Kepegawaian ASN/PNS", unit: "UMUM" },
+                        { name: "Pelayanan Penerbitan Surat Keputusan Kenaikan Gaji Berkala", category: "Kepegawaian ASN/PNS", unit: "UMUM" },
+                        { name: "Pelayanan Penerbitan Surat Pengantar ke BKPSDM", category: "Kepegawaian ASN/PNS", unit: "UMUM" },
+                        { name: "Pelayanan Penghapusan Aset Barang dan Bangunan", category: "Pelayanan Umum", unit: "UMUM" },
+                        { name: "Pelayanan Pensiun", category: "Kepegawaian ASN/PNS", unit: "UMUM" },
+                        { name: "Pembuatan Kelengkapan Berkas Kenaikan Golongan", category: "Kepegawaian ASN/PNS", unit: "UMUM" }
+                    ]
+                }
+            },
+            computed: {
+                categories() {
+                    const uniqueCategories = [...new Set(this.services.map(s => s.category))];
+                    return uniqueCategories.sort();
+                },
+                filteredServices() {
+                    let filtered = this.services;
+                    
+                    if (this.selectedCategory) {
+                        filtered = filtered.filter(s => s.category === this.selectedCategory);
+                    }
+                    
+                    if (this.searchQuery.trim()) {
+                        const query = this.searchQuery.toLowerCase();
+                        filtered = filtered.filter(s => 
+                            s.name.toLowerCase().includes(query) ||
+                            s.category.toLowerCase().includes(query) ||
+                            s.unit.toLowerCase().includes(query)
+                        );
+                    }
+                    
+                    return filtered;
+                }
+            },
+            methods: {
+                validateField(field) {
+                    if (field.required && !this.formData[field.name]) {
+                        this.errors[field.name] = `Field ${field.label} wajib diisi`;
+                        return false;
+                    }
+                    
+                    // Validasi spesifik berdasarkan tipe field
+                    if (field.type === 'email' && !this.isValidEmail(this.formData[field.name])) {
+                        this.errors[field.name] = 'Format email tidak valid';
+                        return false;
+                    }
+                    
+                    // ... validasi lainnya
+                    
+                    this.errors[field.name] = '';
+                    return true;
+                },
+                
+                isValidEmail(email) {
+                    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+                },
+                getCategoryCount(category) {
+                    return this.services.filter(s => s.category === category).length;
+                },
+                getServiceDescription(serviceName) {
+                    const descriptions = {
+                        'Pelalyanan Pembuatan Pindah Rayon Daerah': 'Layanan untuk pemindahan siswa antar rayon dalam satu daerah',
+                        'Pelayanan Pegantian Ijazah (Kehilangan/rusak/kesalahan Penulisan)': 'Layanan penggantian ijazah yang hilang, rusak, atau terdapat kesalahan penulisan',
+                        'Pelayanan Penerbitan SK Tunjangan Profesi (SKTP) Guru Jenjang Dikdas': 'Penerbitan surat keputusan tunjangan profesi untuk guru pendidikan dasar',
+                        'Pelayanan Penetapan Cagar Budaya': 'Layanan penetapan status cagar budaya untuk objek atau bangunan bersejarah'
+                    };
+                    return descriptions[serviceName] || 'Layanan administrasi sesuai dengan kebutuhan pemohon';
+                },
+                getServiceRequirements(serviceName) {
+                    const requirements = {
+                        'default': [
+                            'Mengisi formulir permohonan',
+                            'Fotokopi KTP yang masih berlaku',
+                            'Pas foto 3x4 (2 lembar)',
+                            'Dokumen pendukung sesuai jenis layanan'
+                        ]
+                    };
+                    return requirements[serviceName] || requirements['default'];
+                },
+                getProcessingTime(serviceName) {
+                    return '3-7 hari kerja (tergantung kelengkapan dokumen)';
+                },
+                openServiceModal(service) {
+                    this.selectedService = service;
+                    this.activeTab = 'info';
+                    this.showModal = true;
+                },
+                showServiceInfo(service) {
+                    this.selectedService = service;
+                    this.activeTab = 'info';
+                    this.showModal = true;
+                },
+                closeModal() {
+                    this.showModal = false;
+                    this.selectedService = null;
+                    this.activeTab = 'info';
+                },
+                submitForm() {
+                    alert('Permohonan berhasil dikirim! Anda akan dihubungi melalui kontak yang telah dicantumkan.');
+                    this.closeModal();
+                },
+                getFormFields(serviceName) {
+                    // Base fields yang selalu ada
+                    const baseFields = [
+                        { name: 'nama', label: 'Nama Lengkap', type: 'text', required: true, placeholder: 'Masukkan nama lengkap' },
+                        { name: 'telepon', label: 'No. Telepon', type: 'tel', required: true, placeholder: 'Contoh: 08123456789' },
+                        { name: 'email', label: 'Email', type: 'email', required: false, placeholder: 'nama@email.com' }
+                    ];
+
+                    // Form fields berdasarkan jenis layanan
+                    const serviceSpecificFields = {
+                        // DIKDAS - Administrasi Siswa
+                        'Pelalyanan Pembuatan Pindah Rayon Daerah': [
+                            { name: 'nisn', label: 'NISN Siswa', type: 'text', required: true, placeholder: 'Nomor Induk Siswa Nasional' },
+                            { name: 'nama_siswa', label: 'Nama Siswa', type: 'text', required: true, placeholder: 'Nama lengkap siswa' },
+                            { name: 'asal_sekolah', label: 'Sekolah Asal', type: 'text', required: true, placeholder: 'Nama sekolah asal' },
+                            { name: 'tujuan_sekolah', label: 'Sekolah Tujuan', type: 'text', required: true, placeholder: 'Nama sekolah tujuan' },
+                            { name: 'alasan', label: 'Alasan Pindah', type: 'textarea', required: true, placeholder: 'Jelaskan alasan kepindahan', rows: 3 },
+                            { name: 'dokumen', label: 'Upload Dokumen', type: 'file', required: true, multiple: true, accept: '.pdf,.jpg,.jpeg,.png', note: 'Upload KK, Akta Kelahiran, Raport (PDF/JPG, Max 5MB)' }
+                        ],
+                        
+                        'Pelayanan Pegantian Ijazah (Kehilangan/rusak/kesalahan Penulisan)': [
+                            { name: 'nomor_ijazah', label: 'Nomor Ijazah Lama', type: 'text', required: true, placeholder: 'Nomor ijazah yang hilang/rusak' },
+                            { name: 'tahun_lulus', label: 'Tahun Kelulusan', type: 'number', required: true, placeholder: '2020' },
+                            { name: 'sekolah', label: 'Nama Sekolah', type: 'text', required: true, placeholder: 'Sekolah penerbit ijazah' },
+                            { name: 'jenis_masalah', label: 'Jenis Permasalahan', type: 'select', required: true, placeholder: 'Pilih jenis masalah', options: ['Hilang', 'Rusak', 'Kesalahan Penulisan Nama', 'Kesalahan Penulisan Tempat/Tanggal Lahir'] },
+                            { name: 'nik', label: 'NIK', type: 'text', required: true, placeholder: 'Nomor Induk Kependudukan' },
+                            { name: 'surat_kehilangan', label: 'Surat Keterangan Kepolisian (jika hilang)', type: 'file', required: false, accept: '.pdf,.jpg,.jpeg,.png', note: 'Khusus untuk ijazah hilang' },
+                            { name: 'ijazah_rusak', label: 'Foto/Scan Ijazah Rusak', type: 'file', required: false, accept: '.pdf,.jpg,.jpeg,.png', note: 'Khusus untuk ijazah rusak' },
+                            { name: 'dokumen_pendukung', label: 'Dokumen Pendukung Lainnya', type: 'file', required: true, multiple: true, accept: '.pdf,.jpg,.jpeg,.png', note: 'KTP, KK, Akta Kelahiran (PDF/JPG, Max 5MB)' }
+                        ],
+
+                        // GTK - Pendidik dan Tenaga Kependidikan
+                        'Pelayanan Penerbitan SK Tunjangan Profesi (SKTP) Guru Jenjang Dikdas': [
+                            { name: 'nip', label: 'NIP', type: 'text', required: true, placeholder: 'Nomor Induk Pegawai' },
+                            { name: 'nrg', label: 'NRG (Nomor Registrasi Guru)', type: 'text', required: true, placeholder: 'Nomor Registrasi Guru' },
+                            { name: 'sekolah_induk', label: 'Sekolah Induk', type: 'text', required: true, placeholder: 'Nama sekolah tempat tugas' },
+                            { name: 'mata_pelajaran', label: 'Mata Pelajaran/Guru Kelas', type: 'text', required: true, placeholder: 'Mata pelajaran yang diampu' },
+                            { name: 'status_sertifikasi', label: 'Status Sertifikasi', type: 'select', required: true, placeholder: 'Pilih status', options: ['Sudah Bersertifikat', 'Belum Bersertifikat'] },
+                            { name: 'tahun_sertifikasi', label: 'Tahun Lulus Sertifikasi', type: 'number', required: false, placeholder: '2020' },
+                            { name: 'dokumen_sertifikat', label: 'Sertifikat Pendidik', type: 'file', required: true, accept: '.pdf,.jpg,.jpeg,.png', note: 'Upload sertifikat pendidik (PDF/JPG)' },
+                            { name: 'sk_mengajar', label: 'SK Mengajar', type: 'file', required: true, accept: '.pdf,.jpg,.jpeg,.png', note: 'Surat keputusan mengajar dari kepala sekolah' }
+                        ],
+
+                        'Pelayanan Mutasi Guru PNS': [
+                            { name: 'nip', label: 'NIP', type: 'text', required: true, placeholder: 'Nomor Induk Pegawai' },
+                            { name: 'unit_kerja_asal', label: 'Unit Kerja Asal', type: 'text', required: true, placeholder: 'Sekolah/instansi asal' },
+                            { name: 'unit_kerja_tujuan', label: 'Unit Kerja Tujuan', type: 'text', required: true, placeholder: 'Sekolah/instansi tujuan' },
+                            { name: 'jenis_mutasi', label: 'Jenis Mutasi', type: 'select', required: true, placeholder: 'Pilih jenis mutasi', options: ['Mutasi Biasa', 'Mutasi Atas Permintaan Sendiri', 'Mutasi Jabatan', 'Mutasi Promosi'] },
+                            { name: 'alasan_mutasi', label: 'Alasan Mutasi', type: 'textarea', required: true, placeholder: 'Jelaskan alasan mutasi secara detail', rows: 4 },
+                            { name: 'tanggal_diinginkan', label: 'Tanggal Mulai Tugas yang Diinginkan', type: 'date', required: true },
+                            { name: 'persetujuan_atasan', label: 'Surat Persetujuan Atasan', type: 'file', required: true, accept: '.pdf,.jpg,.jpeg,.png', note: 'Surat persetujuan dari kepala sekolah/atasan langsung' },
+                            { name: 'sk_terakhir', label: 'SK Terakhir', type: 'file', required: true, accept: '.pdf,.jpg,.jpeg,.png', note: 'SK pengangkatan/penempatan terakhir' }
+                        ],
+
+                        'Pelayanan Cuti ASN Guru & Kepala sekolah': [
+                            { name: 'nip', label: 'NIP', type: 'text', required: true, placeholder: 'Nomor Induk Pegawai' },
+                            { name: 'jabatan', label: 'Jabatan', type: 'select', required: true, placeholder: 'Pilih jabatan', options: ['Guru', 'Kepala Sekolah'] },
+                            { name: 'unit_kerja', label: 'Unit Kerja', type: 'text', required: true, placeholder: 'Nama sekolah/instansi' },
+                            { name: 'jenis_cuti', label: 'Jenis Cuti', type: 'select', required: true, placeholder: 'Pilih jenis cuti', options: ['Cuti Tahunan', 'Cuti Besar', 'Cuti Sakit', 'Cuti Melahirkan', 'Cuti Alasan Penting'] },
+                            { name: 'tanggal_mulai', label: 'Tanggal Mulai Cuti', type: 'date', required: true },
+                            { name: 'tanggal_selesai', label: 'Tanggal Selesai Cuti', type: 'date', required: true },
+                            { name: 'lama_cuti', label: 'Lama Cuti (hari)', type: 'number', required: true, placeholder: 'Jumlah hari' },
+                            { name: 'alamat_cuti', label: 'Alamat Selama Cuti', type: 'textarea', required: true, placeholder: 'Alamat lengkap selama cuti', rows: 2 },
+                            { name: 'alasan_cuti', label: 'Alasan Cuti', type: 'textarea', required: true, placeholder: 'Jelaskan alasan mengambil cuti', rows: 3 },
+                            { name: 'surat_dokter', label: 'Surat Keterangan Dokter (untuk cuti sakit)', type: 'file', required: false, accept: '.pdf,.jpg,.jpeg,.png', note: 'Khusus untuk cuti sakit' }
+                        ],
+
+                        // KEBUDAYAAN
+                        'Pelayanan Penetapan Cagar Budaya': [
+                            { name: 'nama_objek', label: 'Nama Objek Cagar Budaya', type: 'text', required: true, placeholder: 'Nama bangunan/objek yang diusulkan' },
+                            { name: 'jenis_cagar_budaya', label: 'Jenis Cagar Budaya', type: 'select', required: true, placeholder: 'Pilih jenis', options: ['Bangunan', 'Struktur', 'Situs', 'Kawasan', 'Benda'] },
+                            { name: 'lokasi', label: 'Lokasi/Alamat', type: 'textarea', required: true, placeholder: 'Alamat lengkap lokasi objek', rows: 2 },
+                            { name: 'koordinat', label: 'Koordinat GPS', type: 'text', required: false, placeholder: 'Lat, Long (opsional)' },
+                            { name: 'tahun_pembuatan', label: 'Tahun/Periode Pembuatan', type: 'text', required: false, placeholder: 'Estimasi tahun atau periode' },
+                            { name: 'sejarah_singkat', label: 'Sejarah Singkat', type: 'textarea', required: true, placeholder: 'Jelaskan sejarah dan nilai budaya objek', rows: 4 },
+                            { name: 'kondisi_saat_ini', label: 'Kondisi Saat Ini', type: 'select', required: true, placeholder: 'Pilih kondisi', options: ['Baik', 'Cukup Baik', 'Rusak Ringan', 'Rusak Berat'] },
+                            { name: 'foto_objek', label: 'Foto Objek', type: 'file', required: true, multiple: true, accept: '.jpg,.jpeg,.png', note: 'Upload foto dari berbagai sudut (JPG/PNG, Max 10MB)' },
+                            { name: 'dokumen_sejarah', label: 'Dokumen Sejarah Pendukung', type: 'file', required: false, multiple: true, accept: '.pdf,.jpg,.jpeg,.png', note: 'Dokumen, artikel, atau referensi sejarah' }
+                        ],
+
+                        // PAUD & PNF
+                        'Pelayanan Penerbitan Rekomendasi Izin Operasional PAUD/PKBM': [
+                            { name: 'nama_lembaga', label: 'Nama Lembaga', type: 'text', required: true, placeholder: 'Nama PAUD/PKBM' },
+                            { name: 'jenis_lembaga', label: 'Jenis Lembaga', type: 'select', required: true, placeholder: 'Pilih jenis', options: ['TK/RA', 'KB (Kelompok Bermain)', 'TPA (Tempat Penitipan Anak)', 'PKBM', 'SKB'] },
+                            { name: 'alamat_lembaga', label: 'Alamat Lembaga', type: 'textarea', required: true, placeholder: 'Alamat lengkap lembaga', rows: 2 },
+                            { name: 'nama_pengelola', label: 'Nama Pengelola/Kepala', type: 'text', required: true, placeholder: 'Nama kepala lembaga' },
+                            { name: 'nik_pengelola', label: 'NIK Pengelola', type: 'text', required: true, placeholder: 'NIK kepala lembaga' },
+                            { name: 'pendidikan_pengelola', label: 'Pendidikan Terakhir Pengelola', type: 'select', required: true, placeholder: 'Pilih pendidikan', options: ['SMA/SMK', 'D3', 'S1', 'S2', 'S3'] },
+                            { name: 'jumlah_siswa', label: 'Jumlah Siswa Saat Ini', type: 'number', required: true, placeholder: 'Jumlah siswa aktif' },
+                            { name: 'jumlah_guru', label: 'Jumlah Guru/Tutor', type: 'number', required: true, placeholder: 'Jumlah tenaga pengajar' },
+                            { name: 'luas_tanah', label: 'Luas Tanah (m²)', type: 'number', required: true, placeholder: 'Luas tanah dalam meter persegi' },
+                            { name: 'status_tanah', label: 'Status Tanah', type: 'select', required: true, placeholder: 'Pilih status', options: ['Milik Sendiri', 'Sewa', 'Hibah', 'Pinjam Pakai'] },
+                            { name: 'akta_pendirian', label: 'Akta Pendirian', type: 'file', required: true, accept: '.pdf,.jpg,.jpeg,.png', note: 'Akta notaris pendirian lembaga' },
+                            { name: 'sertifikat_tanah', label: 'Sertifikat/Surat Tanah', type: 'file', required: true, accept: '.pdf,.jpg,.jpeg,.png', note: 'Bukti kepemilikan/sewa tanah' },
+                            { name: 'struktur_organisasi', label: 'Struktur Organisasi', type: 'file', required: true, accept: '.pdf,.jpg,.jpeg,.png', note: 'Bagan struktur organisasi lembaga' }
+                        ],
+
+                        // UMUM - Kepegawaian
+                        'Pelayanan Penerbitan Surat Keputusan Kenaikan Gaji Berkala (CONTOH)': [
+                            { name: 'nip', label: 'NIP', type: 'text', required: true, placeholder: 'Nomor Induk Pegawai' },
+                            { name: 'golongan_sekarang', label: 'Golongan/Ruang Sekarang', type: 'text', required: true, placeholder: 'Contoh: III/a' },
+                            { name: 'gaji_pokok_sekarang', label: 'Gaji Pokok Sekarang', type: 'number', required: true, placeholder: 'Gaji pokok saat ini' },
+                            { name: 'tmt_gaji_terakhir', label: 'TMT Gaji Terakhir', type: 'date', required: true },
+                            { name: 'masa_kerja_tahun', label: 'Masa Kerja (Tahun)', type: 'number', required: true, placeholder: 'Tahun' },
+                            { name: 'masa_kerja_bulan', label: 'Masa Kerja (Bulan)', type: 'number', required: true, placeholder: 'Bulan' },
+                            { name: 'jabatan', label: 'Jabatan', type: 'text', required: true, placeholder: 'Jabatan saat ini' },
+                            { name: 'unit_kerja', label: 'Unit Kerja', type: 'text', required: true, placeholder: 'Tempat bertugas' },
+                            { name: 'sk_terakhir', label: 'SK Gaji Berkala Terakhir', type: 'file', required: true, accept: '.pdf,.jpg,.jpeg,.png', note: 'SK KGB terakhir' },
+                            { name: 'sk_cpns_pns', label: 'SK CPNS/PNS', type: 'file', required: true, accept: '.pdf,.jpg,.jpeg,.png', note: 'SK pengangkatan CPNS/PNS' }
+                        ],
+
+                        'Pelayanan Pensiun': [
+                            { name: 'nip', label: 'NIP', type: 'text', required: true, placeholder: 'Nomor Induk Pegawai' },
+                            { name: 'jenis_pensiun', label: 'Jenis Pensiun', type: 'select', required: true, placeholder: 'Pilih jenis pensiun', options: ['Pensiun Usia', 'Pensiun Atas Permintaan Sendiri', 'Pensiun Karena Cacat'] },
+                            { name: 'tanggal_lahir', label: 'Tanggal Lahir', type: 'date', required: true },
+                            { name: 'tmt_pensiun', label: 'TMT Pensiun yang Diinginkan', type: 'date', required: true },
+                            { name: 'golongan_terakhir', label: 'Golongan/Ruang Terakhir', type: 'text', required: true, placeholder: 'Contoh: IV/a' },
+                            { name: 'jabatan_terakhir', label: 'Jabatan Terakhir', type: 'text', required: true, placeholder: 'Jabatan terakhir sebelum pensiun' },
+                            { name: 'masa_kerja_tahun', label: 'Masa Kerja (Tahun)', type: 'number', required: true, placeholder: 'Total tahun bekerja' },
+                            { name: 'masa_kerja_bulan', label: 'Masa Kerja (Bulan)', type: 'number', required: true, placeholder: 'Total bulan' },
+                            { name: 'alamat_pensiun', label: 'Alamat Setelah Pensiun', type: 'textarea', required: true, placeholder: 'Alamat lengkap setelah pensiun', rows: 2 },
+                            { name: 'sk_cpns', label: 'SK CPNS', type: 'file', required: true, accept: '.pdf,.jpg,.jpeg,.png', note: 'SK pengangkatan CPNS' },
+                            { name: 'sk_pns', label: 'SK PNS', type: 'file', required: true, accept: '.pdf,.jpg,.jpeg,.png', note: 'SK pengangkatan PNS' },
+                            { name: 'sk_kgb_terakhir', label: 'SK KGB Terakhir', type: 'file', required: true, accept: '.pdf,.jpg,.jpeg,.png', note: 'SK kenaikan gaji berkala terakhir' },
+                            { name: 'surat_pernyataan', label: 'Surat Pernyataan Pensiun', type: 'file', required: true, accept: '.pdf,.jpg,.jpeg,.png', note: 'Surat permohonan pensiun bermaterai' }
+                        ]
+                    };
+
+                    // Ambil field khusus untuk layanan ini, atau gunakan field default
+                    const specificFields = serviceSpecificFields[serviceName] || [
+                        { name: 'keterangan', label: 'Keterangan/Keperluan', type: 'textarea', required: true, placeholder: 'Jelaskan keperluan Anda', rows: 4 },
+                        { name: 'dokumen', label: 'Upload Dokumen Pendukung', type: 'file', required: false, multiple: true, accept: '.pdf,.jpg,.jpeg,.png,.doc,.docx', note: 'Format: PDF, JPG, PNG, DOC, DOCX (Max. 5MB per file)' }
+                    ];
+
+                    return [...baseFields, ...specificFields];
+                },
+ getServiceFaqs(serviceName) {
+    return this.serviceFaqs[serviceName] || [
+      {
+        question: "Tidak ada FAQ khusus untuk layanan ini",
+        answer: "Silakan gunakan fitur live chat untuk bertanya lebih lanjut",
+        open: true
+      }
+    ];
+  },
+
+  getServiceDocumentation(serviceName) {
+    const docs = {
+      'Pelalyanan Pembuatan Pindah Rayon Daerah': '/docs/panduan-pensiun.pdf',
+      // lainnya
+    };
+    return docs[serviceName] || '/docs/umum.pdf';
+  },
+  toggleServiceFaq(index) {
+    if (!this.serviceFaqs[this.selectedService.name]) return;
+    this.serviceFaqs[this.selectedService.name][index].open = 
+      !this.serviceFaqs[this.selectedService.name][index].open;
+  },
+
+                startServiceChat(service) {
+    this.showModal = false;
+    this.showChat = true;
+    this.chatMessages = [
+      {
+        text: `Halo! Anda memiliki pertanyaan tentang layanan: ${service.name}. Silakan tanyakan apa yang perlu Anda ketahui.`,
+        sender: 'bot'
+      },
+      {
+        text: `Deskripsi layanan: ${this.getServiceDescription(service.name)}`,
+        sender: 'bot'
+      }
+    ];
+    // Auto-scroll ke bawah chat
+    setTimeout(() => {
+      const chatContainer = document.querySelector('.chat-container');
+      chatContainer.scrollTop = chatContainer.scrollHeight;
+    }, 100);
+  },
+
+                resetFilters() {
+                    this.searchQuery = '';
+                    this.selectedCategory = '';
+                },
+                scrollToTop() {
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                },
+                toggleChat() {
+                    this.showChat = !this.showChat;
+                },
+                sendChatMessage() {
+                    if (this.chatInput.trim()) {
+                        this.chatMessages.push({
+                            text: this.chatInput,
+                            sender: 'user'
+                        });
+                        
+                        // Simulasikan balasan bot
+                        setTimeout(() => {
+                            this.chatMessages.push({
+                                text: 'Terima kasih atas pesan Anda. Tim kami akan segera merespons.',
+                                sender: 'bot'
+                            });
+                        }, 1000);
+                        
+                        this.chatInput = '';
+                    }
+                },
+                toggleNotifications() {
+                    this.showNotifications = !this.showNotifications;
+                    if (this.showNotifications) {
+                        this.unreadNotifications = 0;
+                    }
+                },
+                viewNotification(notif) {
+                    // Implementasi aksi ketika notifikasi diklik
+                    console.log('View notification:', notif);
+                    this.showNotifications = false;
+                },
+                toggleFAQ(index) {
+                    this.faqs[index].open = !this.faqs[index].open;
+                },
+                trackRequest() {
+                    if (this.trackingNumber.trim()) {
+                        alert(`Melacak permohonan dengan nomor: ${this.trackingNumber}`);
+                        // Implementasi pelacakan sebenarnya
+                    } else {
+                        alert('Masukkan nomor tiket terlebih dahulu');
+                    }
+                },
+                formatDate(date) {
+                    return date.toLocaleDateString('id-ID', {
+                        day: 'numeric',
+                        month: 'short',
+                        year: 'numeric'
+                    });
+                }
+            }
+        }).mount('#app');
+    </script>
+</body>
+</html>
+
+
+<!--  Roadmap
+
+1. Responsivitas dan Mobile Experience
+    - Tambahkan menu hamburger untuk tampilan mobile (saat ini menu navigasi hanya muncul di desktop)
+    - Periksa kembali tampilan form di perangkat mobile (beberapa form mungkin terlalu panjang)
+
+2. Validasi Form yang Lebih Baik
+    - Tambahkan validasi real-time untuk form permohonan
+    - Tampilkan pesan error yang lebih spesifik untuk setiap field
+
+3. Fitur Pencarian yang Lebih Canggih
+    - Tambahkan autocomplete/suggestions saat mengetik di search bar
+    - Tambahkan filter tambahan (misalnya filter berdasarkan unit)
+
+4. Manajemen State yang Lebih Baik
+    - Gunakan Vuex/Pinia untuk state management jika aplikasi semakin kompleks
+    - Simpan data di localStorage untuk persistensi (misalnya riwayat permohonan)
+
+5. Fitur Tambahan yang Bermanfaat
+    - Riwayat Permohonan: Halaman untuk melihat status semua permohonan yang pernah diajukan
+    - Dokumen Template: Download template dokumen yang diperlukan untuk setiap layanan
+    - Kalender/Ketersediaan: Tampilkan jadwal ketersediaan layanan atau antrian online
+    - Integrasi Pembayaran: Jika ada layanan yang memerlukan pembayaran
+
+6. Keamanan
+    - Tambahkan CAPTCHA untuk form pengajuan permohonan
+    - Implementasi proteksi terhadap XSS dan serangan lainnya
+
+7. Analytics dan Monitoring
+    - Tambahkan tracking untuk analisis penggunaan (Google Analytics atau lainnya)
+    - Log aktivitas penting
+
+8. Aksesibilitas
+    - Tambahkan ARIA attributes untuk aksesibilitas
+    - Pastikan kontras warna memenuhi standar WCAG
+
+9. Internationalization
+    - Siapkan dukungan multi-bahasa jika diperlukan
+
+10. Testing
+    - Tambahkan unit test untuk komponen penting
+    - Lakukan testing cross-browser
+
+11. Dokumentasi
+    - Tambahkan dokumentasi pengguna (help center) yang lebih lengkap
+    - Buat video tutorial penggunaan aplikasi
+
+12. Backend Integration
+    - Jika ini akan terhubung dengan backend, pastikan:
+    - Error handling yang baik untuk API calls
+    - Loading state saat menunggu respons
+    - Auto-refresh token untuk autentikasi 
+
+
+########################################################
+
+Waktu Tunggu Rata-rata:
+Contoh: "Permohonan SKTP biasanya diproses dalam 3-5 hari kerja"
+→ Membantu pengguna mengelola ekspektasi.
+
+Tingkat Kelengkapan Dokumen:
+Contoh: "90% permohonan ditolak karena dokumen tidak lengkap"
+→ Mendorong pengguna untuk mempersiapkan berkas dengan baik.
+
+Volume Layanan:
+Contoh: "1.200+ permohonan SKTP diproses bulan ini"
+→ Menunjukkan transparansi dan kinerja dinas.
+
+
+-->
