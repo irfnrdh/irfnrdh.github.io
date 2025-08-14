@@ -1,5 +1,12 @@
 # **Peta Pengaruh Sosial & Perlindungan Diri**
 
+Video pengenalan,   
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/cFdCzN7RYbw?si=ljYMYfJlk7ewg38j" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/P3rbadeF9AI?si=0ckTpa_YO20ZtmH7" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+
 ## **Deskripsi Singkat**
 
 Atlas ini adalah kumpulan **7 peta pengetahuan** yang memetakan teknik pengaruh, manipulasi, dan propaganda    
