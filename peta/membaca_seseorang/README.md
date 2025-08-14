@@ -1,4 +1,6 @@
-# 🔍 **Peta Membaca Seseorang** - Panduan Memahami Karakter Manusia dalam Hitungan Menit
+# 🔍 **Peta Membaca Seseorang**
+
+Panduan ini dibuat untuk memahami Karakter Manusia dalam Hitungan Menit
 
 > **"Mengenal orang bukan untuk memanipulasi, tapi untuk terhubung lebih baik"**
 
