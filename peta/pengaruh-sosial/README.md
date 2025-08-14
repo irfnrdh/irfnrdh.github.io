@@ -4,9 +4,9 @@ Atlas Pertahanan Mental di Era Digital
 
 > **"Kenali sebelum terjebak, pahami sebelum terpedaya"**
 
-[![Live Demo](https://img.shields.io/badge/🌐_Live_Demo-Click_Here-blue?style=for-the-badge)](https://irfnrdh.github.io/peta/pengaruh-sosial/)
-[![Fork](https://img.shields.io/github/forks/irfnrdh/peta?style=social)](https://github.com/irfnrdh/peta/fork)
-[![Star](https://img.shields.io/github/stars/irfnrdh/peta?style=social)](https://github.com/irfnrdh/peta)
+[![Live Demo](https://img.shields.io/badge/🌐_Live_Demo-Click_Here-blue?style=for-the-badge)](https://irfnrdh.github.io/irfnrdh.github.io/peta/pengaruh-sosial/)
+[![Fork](https://img.shields.io/github/forks/irfnrdh/irfnrdh.github.io?style=social)](https://github.com/irfnrdh/peta/fork)
+[![Star](https://img.shields.io/github/stars/irfnrdh/irfnrdh.github.io?style=social)](https://github.com/irfnrdh/peta)
 
 ## 🎯 **Untuk Siapa Ini?**
 
