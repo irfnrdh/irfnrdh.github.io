@@ -7,20 +7,11 @@
     <meta name="description" content="Education administrator who builds technology solutions">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>👨‍💻</text></svg>">
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@800&display=swap" rel="stylesheet">
-
-    <!-- Facebook Domain -->
-    <meta name="facebook-domain-verification" content="qm1o97t8emnnawdzt18jdyo0gg35eq" />
-    
-    <!-- Production build of Tailwind CSS -->
     <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
-    <!-- Production build of Vue 3 -->
     <script src="https://unpkg.com/vue@3.2.47/dist/vue.global.prod.js"></script>
-    <script src="https://www.youtube.com/iframe_api"></script>
-    
     
     <style>
-
-        hfont {
+        .hfont {
             font-family: 'JetBrains Mono', monospace;
             font-weight: 800;
         }
@@ -75,14 +66,12 @@
             color: #f9fafb;
         }
         
-        /* Layout rata kiri untuk semua ukuran layar */
         .left-aligned-container {
             max-width: 1200px;
             margin-left: 0;
             margin-right: auto;
         }
         
-        /* Mobile: padding yang cukup */
         @media (max-width: 768px) {
             .mobile-padding {
                 padding-left: 1rem;
@@ -95,7 +84,6 @@
             }
         }
         
-        /* Desktop: tetap rata kiri */
         @media (min-width: 769px) {
             .left-aligned-container {
                 margin-left: 2rem;
@@ -103,12 +91,10 @@
             }
         }
         
-        /* Animasi untuk dark mode transition yang lebih comprehensive */
         .dark-transition {
             transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
         }
         
-        /* Pastikan semua elemen mengikuti dark mode */
         .dark {
             color-scheme: dark;
         }
@@ -161,104 +147,77 @@
         .dark .bg-gray-900 {
             background-color: #111827 !important;
         }
-        .bg-video{
-            content: "";
-            height: 969px;
+
+        /* Video Hover Effect */
+        .hover-video-wrapper {
+            position: relative;
+            overflow: hidden;
+            border-radius: 1rem;
+        }
+
+        .hover-video-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
             width: 100%;
+            height: 100%;
             background: linear-gradient(rgba(15, 26, 36, 0) 0%, rgba(15, 26, 36, 0.63) 70%, rgb(15, 26, 36) 100%);
-            position: absolute;
-            top: 0px;
-            left: 0px;
+            opacity: 0;
+            transition: opacity 0.5s ease;
             z-index: 1;
         }
 
-        .bg-video .mask {
+        .hover-video-player {
             position: absolute;
+            top: 0;
+            left: 0;
             width: 100%;
-            height: 969px;
-            background: rgb(15, 26, 36);
-            opacity: 0.9;
-            z-index: 1;
-        }
-
-        .bg-video video {
-            position: absolute;
+            height: 100%;
             object-fit: cover;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            z-index: 0;
         }
 
-/* Video Hover Effect */
-.hover-video-wrapper {
-    position: relative;
-    overflow: hidden;
-    border-radius: 1rem; /* Sesuaikan dengan border-radius section */
-}
+        .hover-video-trigger:hover .hover-video-overlay,
+        .hover-video-trigger:hover .hover-video-player {
+            opacity: 1;
+        }
 
-.hover-video-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.7);
-    opacity: 0;
-    transition: opacity 0.5s ease;
-    z-index: 1;
-}
+        .hover-content {
+            position: relative;
+            z-index: 2;
+            transition: color 0.3s ease;
+        }
 
-.hover-video-player {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    opacity: 0;
-    transition: opacity 0.5s ease;
-    z-index: 0;
-}
+        .hover-video-trigger:hover .hover-content {
+            color: white;
+        }
 
-.hover-video-trigger:hover .hover-video-overlay,
-.hover-video-trigger:hover .hover-video-player {
-    opacity: 1;
-}
+        .name-link {
+            text-decoration: underline;
+            text-decoration-thickness: 2px;
+            text-underline-offset: 4px;
+            transition: all 0.2s ease;
+        }
 
-.hover-content {
-    position: relative;
-    z-index: 2;
-}
-
+        .name-link:hover {
+            text-decoration-color: #3b82f6;
+        }
     </style>
 </head>
 <body class="bg-white text-gray-900 dark:bg-gray-900 dark-transition" id="app">
     
     <!-- Theme and Language Toggle -->
     <div class="fixed top-4 right-4 md:top-6 md:right-6 z-50 flex gap-2">
-       
-        <button
-        @click="toggleMusic"
-        class="p-2 rounded-full bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 dark-transition shadow-lg"
-      >
-        <!-- Jika sedang memutar, tampilkan ikon pause -->
-        <svg v-if="isPlaying" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-          <path fill-rule="evenodd" d="M6 4a1 1 0 011 1v10a1 1 0 11-2 0V5a1 1 0 011-1zm8 0a1 1 0 011 1v10a1 1 0 11-2 0V5a1 1 0 011-1z" clip-rule="evenodd" />
-        </svg>
-      
-        <!-- Jika sedang pause, tampilkan ikon play -->
-        <svg v-else xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-          <path d="M6.5 5.5v9l8-4.5-8-4.5z" />
-        </svg>
-      </button>
-
-      <button @click="toggleDarkMode()" class="p-2 rounded-full bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 dark-transition shadow-lg">
-        <svg v-if="darkMode" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-            <path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clip-rule="evenodd" />
-        </svg>
-        <svg v-else xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-            <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" />
-        </svg>
-    </button>
-      
-
+        <button @click="toggleDarkMode()" class="p-2 rounded-full bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 dark-transition shadow-lg">
+            <svg v-if="darkMode" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clip-rule="evenodd" />
+            </svg>
+            <svg v-else xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" />
+            </svg>
+        </button>
         
         <div class="flex bg-gray-100 dark:bg-gray-700 rounded-full p-1 shadow-lg dark-transition">
             <button @click="currentLang = 'id'" 
@@ -275,57 +234,29 @@
     </div>
 
     <!-- Main Content -->
-    <!-- <div class="min-h-screen dark-transition">
-        <div>
-        <div class="bg-video">
-            <div class="mask"></div>
-            <video autoplay="" loop="" width="100%" height="969px" id="myVideo"><source src="https://file-examples.com/wp-content/storage/2017/04/file_example_MP4_480_1_5MG.mp4" type="video/mp4"></video>
-        </div>
-        <section class="pt-24 md:pt-32 pb-16 md:pb-24 border border-8 border-gray-600 rounded-3xl m-4 hover:bg-blue-900 hover:fade-in">
-            <div class="left-aligned-container px-4 md:px-8 mobile-padding fade-in">
-                <h1 class="text-4xl md:text-5xl lg:text-9xl font-light mb-6 md:mb-8 leading-tight dark:text-white font-black">
-                    {{ content[currentLang].greeting }}.
+    <div class="min-h-screen dark-transition">
+        
+        <!-- Hero Section -->
+        <section class="pt-24 md:pt-32 pb-16 md:pb-24 border border-8 border-gray-600 rounded-3xl m-4 hover-video-trigger hover-video-wrapper dark-transition">
+            <!-- Video Background -->
+            <div class="hover-video-overlay"></div>
+            <video class="hover-video-player" loop muted playsinline>
+                <source src="https://videos.pexels.com/video-files/7534244/7534244-hd_1920_1080_25fps.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+            
+            <!-- Content -->
+            <div class="left-aligned-container px-4 md:px-8 mobile-padding fade-in hover-content">
+                <h1 class="text-4xl md:text-5xl lg:text-9xl font-light mb-6 md:mb-8 leading-tight dark:text-white font-black hfont">
+                    {{ getGreeting() }}
                 </h1>
                 <p class="text-lg md:text-xl lg:text-2xl text-gray-600 dark:text-gray-300 font-light leading-relaxed max-w-4xl" v-html="content[currentLang].tagline">
                 </p>
             </div>
         </section>
-    </div> -->
-
-    <div style="display: none;">
-        <div id="musicPlayer"></div>
-      </div>
-
-<!-- Hero Section -->
-<section class="pt-24 md:pt-32 pb-16 md:pb-24 border border-8 border-gray-600 rounded-3xl m-4 hover-video-trigger hover-video-wrapper dark-transition">
-    <!-- Video Background -->
-    <div class="hover-video-overlay bg-video"></div>
-    <video class="hover-video-player" autoplay loop muted playsinline>
-        <!-- <source src="https://videos.pexels.com/video-files/5240978/5240978-uhd_2560_1440_30fps.mp4" type="video/mp4"> -->
-        <!-- <source src="https://videos.pexels.com/video-files/5474268/5474268-uhd_2732_1440_25fps.mp4" type="video/mp4"> -->
-        <!-- <source src="https://videos.pexels.com/video-files/4389426/4389426-uhd_2732_1440_25fps.mp4" type="video/mp4"> -->
-        <source src="https://videos.pexels.com/video-files/7534244/7534244-hd_1920_1080_25fps.mp4" type="video/mp4">
-        Your browser does not support the video tag.
-    </video>
-
-     
-    
-    <!-- Konten -->
-    <div class="left-aligned-container px-4 md:px-8 mobile-padding fade-in hover-content hover:text-white">
-        <h1 class="text-4xl md:text-5xl lg:text-9xl font-light mb-6 md:mb-8 leading-tight dark:text-white font-black hfont">
-            {{ content[currentLang].greeting }}.
-            
-
-              
-        </h1>
-        <p class="text-lg md:text-xl lg:text-2xl text-gray-600 dark:text-gray-300 font-light leading-relaxed max-w-4xl" v-html="content[currentLang].tagline">
-        </p>
-    </div>
-</section>
-
 
         <!-- Current Work -->
-        <section class="py-12 md:py-16 border border-8 border-gray-600 rounded-3xl m-4 ">
+        <section class="py-12 md:py-16 border border-8 border-gray-600 rounded-3xl m-4">
             <div class="left-aligned-container px-4 md:px-8 mobile-padding">
                 <h2 class="text-2xl md:text-3xl font-light mb-8 md:mb-12 dark:text-white">
                     {{ content[currentLang].currentTitle }}
@@ -333,14 +264,14 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
                     <div v-for="current in content[currentLang].currentWork" 
                          :key="current.type"
-                         class="p-4 md:p-6 hover-lift dark-transition rounded-lg bg-white dark:bg-gray-800 ">
+                         class="p-4 md:p-6 hover-lift dark-transition rounded-lg bg-white dark:bg-gray-800">
                         <div class="text-gray-500 dark:text-gray-400 text-sm uppercase tracking-wider mb-2">
                             {{ current.type }}
                         </div>
-                        <a :href="current.link" :alt="current.project" target="_blank">
-                        <div class="font-medium text-gray-900 dark:text-white cursor-pointer">
-                            {{ current.project }}
-                        </div>
+                        <a :href="current.link || '#'" :alt="current.project" :target="current.link ? '_blank' : '_self'">
+                            <div class="font-medium text-gray-900 dark:text-white cursor-pointer">
+                                {{ current.project }}
+                            </div>
                         </a>
                     </div>
                 </div>
@@ -415,11 +346,9 @@
 
                 <!-- Creative Work -->
                 <div class="mb-12 md:mb-16">
-                    <a href="/creative.html" class="cursor-pointer">
-                        <h3 class="text-lg md:text-xl font-medium mb-6 md:mb-8 text-gray-700 dark:text-gray-300">
-                            {{ content[currentLang].creativeTitle }}
-                        </h3>
-                    </a>
+                    <h3 class="text-lg md:text-xl font-medium mb-6 md:mb-8 text-gray-700 dark:text-gray-300">
+                        {{ content[currentLang].creativeTitle }}
+                    </h3>
                     <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
                         <div v-for="work in content[currentLang].creative" 
                              :key="work.name"
@@ -429,7 +358,6 @@
                             </div>
                             <h4 class="font-medium text-sm mb-1 text-gray-900 dark:text-white">{{ work.name }} ({{ work.year }})</h4>
                             <p class="text-xs text-gray-600 dark:text-gray-400">{{ work.description }}</p>
-                            <p class="text-xs text-gray-600 dark:text-gray-400"></p>
                         </div>
                     </div>
                 </div>
@@ -440,25 +368,20 @@
                         {{ content[currentLang].writingTitle }}
                     </h3>
                     <div class="space-y-4">
-                        <div v-for="article in content[currentLang].writing" 
-                             :key="article.title"
-                             class="">
-                             <a :href="article.link" target="_blank" :alt="article.title" class="flex flex-col sm:flex-row sm:justify-between sm:items-start py-4 border-b border-gray-200 dark:border-gray-700 hover-lift dark-transition gap-2 cursor-pointer">
-
-                                <div class="flex-1">
-                          
-
-                                    <h4 class="font-medium mb-1 text-gray-900 dark:text-white">{{ article.title }}</h4>
-                                    <p class="text-sm text-gray-600 dark:text-gray-400">{{ article.platform }}</p>
-
-                                </div>
-                                <div class="text-sm text-gray-500 dark:text-gray-400 sm:ml-4 flex-shrink-0">
-                                    {{ article.date }}
-                                </div>
-
-                            </a>
-
-                        </div>
+                        <a v-for="article in content[currentLang].writing" 
+                           :key="article.title"
+                           :href="article.link" 
+                           target="_blank" 
+                           :alt="article.title" 
+                           class="flex flex-col sm:flex-row sm:justify-between sm:items-start py-4 border-b border-gray-200 dark:border-gray-700 hover-lift dark-transition gap-2 cursor-pointer block">
+                            <div class="flex-1">
+                                <h4 class="font-medium mb-1 text-gray-900 dark:text-white">{{ article.title }}</h4>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">{{ article.platform }}</p>
+                            </div>
+                            <div class="text-sm text-gray-500 dark:text-gray-400 sm:ml-4 flex-shrink-0">
+                                {{ article.date }}
+                            </div>
+                        </a>
                     </div>
                 </div>
             </div>
@@ -467,14 +390,15 @@
         <!-- Contact -->
         <section class="py-16 md:py-24">
             <div class="left-aligned-container px-4 md:px-8 mobile-padding">
-
-                <img src="https://images.unsplash.com/profile-1715081357931-c6643e8ba7d7image?w=150&dpr=1&crop=faces&bg=%23fff&h=150&auto=format&fit=crop&q=60&ixlib=rb-4.1.0
-                " class="rounded-lg mb-7 hover-lift" style="width: 150px;">
+                <img src="https://images.unsplash.com/profile-1715081357931-c6643e8ba7d7image?w=150&dpr=1&crop=faces&bg=%23fff&h=150&auto=format&fit=crop&q=60&ixlib=rb-4.1.0" 
+                     class="rounded-lg mb-7 hover-lift" 
+                     style="width: 150px;" 
+                     alt="Profile picture">
 
                 <h2 class="text-2xl md:text-3xl font-light mb-6 md:mb-8 dark:text-white">
                     {{ content[currentLang].contactTitle }}
                 </h2>
-                <p class="text-gray-600 dark:text-gray-300 mb-8 md:mb-12 max-w-3xl leading-relaxed" v-html="content[currentLang].contactDesc ">
+                <p class="text-gray-600 dark:text-gray-300 mb-8 md:mb-12 max-w-3xl leading-relaxed" v-html="content[currentLang].contactDesc">
                 </p>
                 <div class="flex flex-col sm:flex-row sm:items-center space-y-4 sm:space-y-0 sm:space-x-8">
                     <a href="mailto:irfnrdh@gmail.com" 
@@ -510,52 +434,16 @@
     </div>
 
     <script>
-
-let player;
-let musicStarted = false;
-
-function onYouTubeIframeAPIReady() {
-  player = new YT.Player('musicPlayer', {
-    height: '0',
-    width: '0',
-    videoId: 'nSkDpIj0Y7w',
-    playerVars: {
-      autoplay: 1,
-      loop: 1,
-      playlist: 'nSkDpIj0Y7w',
-      mute: 1
-    },
-    events: {
-      onReady: () => {
-        player.playVideo(); // autoplay dalam keadaan mute
-
-        // Coba unmute setelah delay
-        setTimeout(() => {
-          try {
-            player.unMute();
-            musicStarted = true;
-          } catch (e) {
-            console.warn("Browser menolak autoplay dengan suara");
-          }
-        }, 3000); // 3 detik delay
-      }
-    }
-  });
-}
-
-
         const { createApp } = Vue;
         
         createApp({
             data() {
                 return {
-                    isPlaying: true,
-                    isMuted: true,
                     currentLang: 'id',
                     darkMode: false,
                     content: {
                         id: {
-                            greeting: 'Halo, saya <a href="/about.html" class="cursor-pointer">Irfan</a>',
+                            greeting: 'Halo, saya Irfan',
                             tagline: 'Saya membantu administrasi pendidikan di siang hari, membangun solusi teknologi di waktu senggang',
                             currentTitle: 'Sedang dikerjakan',
                             currentWork: [
@@ -601,25 +489,23 @@ function onYouTubeIframeAPIReady() {
                             ],
                             creativeTitle: 'Karya Kreatif',
                             creative: [
-                                { name: 'Brand Identity Sekolah', type: 'Design', year: '2024' },
-                                { name: 'Dokumentasi Wisuda', type: 'Photo', year: '2024' },
-                                { name: 'UI Kit Pendidikan', type: 'Design', year: '2023' },
-                                { name: 'Portrait Teachers', type: 'Photo', year: '2023' }
+                                { name: 'Brand Identity Sekolah', type: 'Design', year: '2024', description: 'Logo dan brand kit' },
+                                { name: 'Dokumentasi Wisuda', type: 'Photo', year: '2024', description: 'Foto dokumentasi acara' },
+                                { name: 'UI Kit Pendidikan', type: 'Design', year: '2023', description: 'Komponen UI untuk edukasi' },
+                                { name: 'Portrait Teachers', type: 'Photo', year: '2023', description: 'Potret para guru' }
                             ],
                             writingTitle: 'Tulisan & Tutorial',
                             writing: [
-                                { title: 'Mengotomatisasi Administrasi Sekolah dengan Teknologi', platform: 'Medium', date: 'Des 2024' },
-                                { title: 'Vue 3 untuk Developer Indonesia', platform: 'Dev.to', date: 'Nov 2024' },
-                                { title: 'AI dalam Dunia Pendidikan', platform: 'Personal Blog', date: 'Okt 2024' }
+                                { title: 'Mengotomatisasi Administrasi Sekolah dengan Teknologi', platform: 'Medium', date: 'Des 2024', link: '#' },
+                                { title: 'Vue 3 untuk Developer Indonesia', platform: 'Dev.to', date: 'Nov 2024', link: '#' },
+                                { title: 'AI dalam Dunia Pendidikan', platform: 'Personal Blog', date: 'Okt 2024', link: '#' }
                             ],
                             contactTitle: 'Mari berkolaborasi',
                             contactDesc: 'Punya ide atau proyek yang ingin diwujudkan? Atau butuh bantuan dengan administrasi pendidikan? Mari diskusi.',
                             footer: '© 2025 Irfannur Diah (@irfnrdh)'
                         },
                         en: {
-                            greeting: 'Hi, I\'m <a href="/about.html" class="cursor-pointer">Irfan</a>',
-                            // tagline: "Empowering education and culture locally by day, <br> Crafting digital product pairing with AI Agents by night. <br> Bug Hunting in the weekend & Full-time thinker, lifelong creator.",                            
-
+                            greeting: 'Hi, I\'m Irfan',
                             tagline: "Empowering local education by sunlight, product engineering by moonlight.<br>A father, productive with AI, bug hunter on weekends, never stop hacking",
                             currentTitle: 'Currently working on',
                             currentWork: [
@@ -631,9 +517,8 @@ function onYouTubeIframeAPIReady() {
                             toolsTitle: 'Tools & Solutions',
                             tools: [
                                 {
-                                    name: 'Daftarin: Costum Online Form Services',
-                                    description: 'I build a custom e-Form for everyone especialy for organization & school',
-                                    // github: 'https://github.com/irfnrdh/content-ai',
+                                    name: 'Daftarin: Custom Online Form Services',
+                                    description: 'I build a custom e-Form for everyone especially for organization & school',
                                     demo: 'https://daftarin.web.id'
                                 },
                                 {
@@ -645,7 +530,6 @@ function onYouTubeIframeAPIReady() {
                                 {
                                     name: 'KodeKeras* Society',
                                     description: 'A Desktop Workspace in Web Based for Personal Productivity',
-                                    // github: 'https://github.com/irfnrdh/kodekeras',
                                     demo: 'https://kodekeras.my.id'
                                 }
                             ],
@@ -653,29 +537,28 @@ function onYouTubeIframeAPIReady() {
                             openSource: [
                                 {
                                     name: 'Focusin',
-                                    description: 'Chrome Extention for Block Distracting',
+                                    description: 'Chrome Extension for Block Distracting',
                                     tech: ['Chrome', 'Javascript'],
                                     github: 'https://github.com/irfnrdh/focusin'
                                 },
                                 {
                                     name: 'Awesome Indonesia NLP',
-                                    description: 'Resource NLP (Natural Language Processing)  & Bahasa',
+                                    description: 'Resource NLP (Natural Language Processing) & Bahasa',
                                     tech: ['AI', 'Machine Learning', 'Resource'],
                                     github: 'https://github.com/irfnrdh/Awesome-Indonesia-NLP'
                                 }
                             ],
                             creativeTitle: 'Creative Work',
                             creative: [
-                                { name: 'Visuwallind', description:'Another visual story from mind', link:'https://www.instagram.com/visuwall.ind', type: 'Design', year: '2024' },
+                                { name: 'Visuwallind', description:'Another visual story from mind', type: 'Design', year: '2024' },
                                 { name: 'Fotoind', description:'A Random visual diary from hometown', type: 'Photo', year: '2014' },
-                                { name: 'Old School', description:'A Random visual diary from hometown', type: 'Design', year: '2013' },
-                                // { name: 'Teacher Portraits', type: 'Photo', year: '2023' }
+                                { name: 'Old School', description:'A Random visual diary from hometown', type: 'Design', year: '2013' }
                             ],
                             writingTitle: 'Writing & Tutorials',
                             writing: [
-                                { title: 'Strategi Sederhana Mempercepat Transformasi Digital di Daerah', platform: 'Medium', date: 'Jan 2025' , link:'https://medium.com/@irfnrdh/strategi-sederhana-mempercepat-transformasi-digital-di-daerah-74bb32717d77'},
-                                { title: 'Transformasi Digital di Daerah, Mengejar Ketertinggalan di Era Digital', platform: 'Medium', date: 'Jan 2025' , link:'https://medium.com/@irfnrdh/transformasi-digital-di-daerah-mengejar-ketertinggalan-di-era-digital-06801348a448'},
-                                { title: 'Menjadi Programmer Kampung', platform: 'Showwcase', date: 'Dec 2022' , link:'https://www.showwcase.com/article/19724/menjadi-programmer-kampung'}
+                                { title: 'Strategi Sederhana Mempercepat Transformasi Digital di Daerah', platform: 'Medium', date: 'Jan 2025', link:'https://medium.com/@irfnrdh/strategi-sederhana-mempercepat-transformasi-digital-di-daerah-74bb32717d77'},
+                                { title: 'Transformasi Digital di Daerah, Mengejar Ketertinggalan di Era Digital', platform: 'Medium', date: 'Jan 2025', link:'https://medium.com/@irfnrdh/transformasi-digital-di-daerah-mengejar-ketertinggalan-di-era-digital-06801348a448'},
+                                { title: 'Menjadi Programmer Kampung', platform: 'Showwcase', date: 'Dec 2022', link:'https://www.showwcase.com/article/19724/menjadi-programmer-kampung'}
                             ],
                             contactTitle: 'Let\'s collaborate',
                             contactDesc: 'Have an idea or project you want to bring to life? <br> Or need help with automation a boring administration? Let\'s discuss.',
@@ -703,6 +586,13 @@ function onYouTubeIframeAPIReady() {
                 this.initVideoHover();
             },
             methods: {
+                getGreeting() {
+                    if (this.currentLang === 'id') {
+                        return 'Halo, saya ';
+                    } else {
+                        return 'Hi, I\'m ';
+                    }
+                },
                 toggleDarkMode() {
                     this.darkMode = !this.darkMode;
                     localStorage.setItem('darkMode', this.darkMode);
@@ -717,7 +607,6 @@ function onYouTubeIframeAPIReady() {
                         document.body.classList.remove('dark');
                     }
                 },
-
                 initVideoHover() {
                     const videoTriggers = document.querySelectorAll('.hover-video-trigger');
                     
@@ -737,22 +626,8 @@ function onYouTubeIframeAPIReady() {
                             }
                         });
                     });
-                },
-
-                toggleMusic() {
-          if (this.isPlaying) {
-            player.pauseVideo();
-            this.isPlaying = false;
-          } else {
-            if (this.isMuted) {
-              player.unMute();
-              this.isMuted = false;
+                }
             }
-            player.playVideo();
-            this.isPlaying = true;
-          }
-        }
-                        }
         }).mount('#app');
     </script>
 </body>
