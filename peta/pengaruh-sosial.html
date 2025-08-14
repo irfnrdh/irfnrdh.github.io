@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Mindmap Pengaruh Sosial Antara Pelaku & Korban - @irfnrdh</title>
+  <!-- TailwindCSS CDN for quick styling -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- D3 for the mindmap -->
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <style>
+    html, body { height: 100%; }
+    #chart { height: 72vh; }
+    .node circle { cursor: pointer; transition: r 0.2s ease; }
+    .node:hover circle { stroke-width: 2.5px; }
+    .link { fill: none; stroke-opacity: 0.6; }
+    .tooltip { position: absolute; pointer-events: none; background: white; border: 1px solid #e5e7eb; border-radius: .75rem; padding: .75rem; box-shadow: 0 10px 15px rgba(0,0,0,.08); max-width: 340px; }
+    .badge { display: inline-block; padding: .2rem .5rem; border-radius: .5rem; font-size: .7rem; line-height: 1; }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800">
+  <div class="max-w-7xl mx-auto p-4">
+    <header class="mb-4">
+      <h1 class="text-2xl md:text-3xl font-bold">Mindmap Pengaruh Sosial Antara Pelaku & Korban</h1>
+      <p class="text-sm md:text-base text-slate-600 mt-1">Eksplor teknik pengaruh sosial lengkap dengan <em>pelaku</em>, <em>korban/target</em>, kondisi yang mendukung, contoh, efek jangka pendek & panjang, dan tingkat etika/risiko.</p>
+    </header>
+
+    <!-- Controls -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-3 mb-3">
+      <div class="col-span-1">
+        <label class="text-xs font-semibold">Cari teknik / kata kunci</label>
+        <input id="search" type="text" placeholder="mis. reciprocity, ENTJ, rasa bersalah" class="w-full mt-1 rounded-xl border px-3 py-2" />
+      </div>
+      <div>
+        <label class="text-xs font-semibold">Filter kategori</label>
+        <select id="categoryFilter" class="w-full mt-1 rounded-xl border px-3 py-2">
+          <option value="">Semua kategori</option>
+          <option value="Psikologis Langsung">Psikologis Langsung</option>
+          <option value="Strategi Bertahap">Strategi Bertahap</option>
+          <option value="Sosial & Budaya">Sosial & Budaya</option>
+          <option value="Negosiasi & Harga">Negosiasi & Harga</option>
+          <option value="Framing & Perhatian">Framing & Perhatian</option>
+          <option value="Nudge & Arsitektur Pilihan">Nudge & Arsitektur Pilihan</option>
+          <option value="Pemasaran & Urgensi">Pemasaran & Urgensi</option>
+        </select>
+      </div>
+      <div>
+        <label class="text-xs font-semibold">Filter risiko/etika</label>
+        <select id="riskFilter" class="w-full mt-1 rounded-xl border px-3 py-2">
+          <option value="">Semua tingkat</option>
+          <option value="Rendah">Rendah</option>
+          <option value="Sedang">Sedang</option>
+          <option value="Tinggi">Tinggi</option>
+        </select>
+      </div>
+      <div class="flex items-end gap-2">
+        <button id="resetBtn" class="w-full md:w-auto rounded-xl bg-slate-800 text-white px-4 py-2 shadow">Reset</button>
+        <button id="expandAllBtn" class="w-full md:w-auto rounded-xl bg-slate-700 text-white px-4 py-2 shadow">Buka semua</button>
+        <button id="collapseAllBtn" class="w-full md:w-auto rounded-xl bg-slate-700 text-white px-4 py-2 shadow">Tutup semua</button>
+      </div>
+    </div>
+
+    <!-- Legend -->
+    <div class="flex flex-wrap items-center gap-3 mb-2 text-sm">
+      <div class="flex items-center gap-2"><span class="inline-block w-3 h-3 rounded-full" style="background:#10b981"></span> Rendah</div>
+      <div class="flex items-center gap-2"><span class="inline-block w-3 h-3 rounded-full" style="background:#f59e0b"></span> Sedang</div>
+      <div class="flex items-center gap-2"><span class="inline-block w-3 h-3 rounded-full" style="background:#ef4444"></span> Tinggi</div>
+      <div class="flex items-center gap-2 ml-6"><span class="inline-block w-4 h-0.5" style="background:#94a3b8"></span> Relasi</div>
+    </div>
+
+    <div id="chart" class="bg-white rounded-2xl shadow relative overflow-hidden"></div>
+
+    <footer class="mt-4 text-xs text-slate-500">
+      <p>Tips: Klik node untuk expand/collapse, gulir untuk zoom, drag untuk pan. Gunakan pencarian untuk menyorot node yang cocok (nama teknik, pelaku, korban, contoh, dsb).</p>
+    </footer>
+  </div>
+
+  <div id="tooltip" class="tooltip hidden"></div>
+
+  <script>
+    // === DATASET ===
+    // Kategori utama digunakan untuk filter dan pengelompokan visual.
+    const techniques = [
+      // Psikologis Langsung
+      {
+        name: "Guilt Trip",
+        category: "Psikologis Langsung",
+        short: "Membuat target merasa bersalah",
+        actor: "Manipulatif halus; sering relasional (INFJ, ENFJ)",
+        target: "Sensitif, sangat peduli hubungan",
+        condition: "Ada utang budi/relasi dekat; target takut mengecewakan",
+        example: "\"Kamu lupa kemarin aku nolongin kamu?\"",
+        shortEffect: "Target mengalah",
+        longEffect: "Kerentanan emosional; resentmen",
+        risk: "Tinggi"
+      },
+      {
+        name: "Liking Principle",
+        category: "Psikologis Langsung",
+        short: "Pengaruh lewat kedekatan/simpati",
+        actor: "Ramah, sosial (ESFP, ENFP)",
+        target: "Ingin diterima; mudah percaya",
+        condition: "Ada kedekatan, daya tarik, kemiripan",
+        example: "Teman dekat minta tolong lebih mudah disetujui",
+        shortEffect: "Persetujuan lebih cepat",
+        longEffect: "Kepercayaan berlebihan ke pihak tertentu",
+        risk: "Rendah"
+      },
+      {
+        name: "Fear / Loss Aversion",
+        category: "Psikologis Langsung",
+        short: "Dorong aksi lewat takut kehilangan",
+        actor: "Dominan/strategis (INTJ, ENTJ, ESTJ)",
+        target: "Takut rugi; risk-averse",
+        condition: "Deadline, konsekuensi negatif ditekankan",
+        example: "\"Kalau tidak daftar sekarang, kesempatan hilang.\"",
+        shortEffect: "Keputusan cepat",
+        longEffect: "Kewaspadaan berlebihan, stres",
+        risk: "Tinggi"
+      },
+      {
+        name: "Priming",
+        category: "Psikologis Langsung",
+        short: "Mempersiapkan asosiasi sebelum pesan utama",
+        actor: "Komunikator halus (INFJ, ENFJ, ENTP)",
+        target: "Mudah terpengaruh konteks",
+        condition: "Paparan kata/gambar/nuansa sebelum ajakan",
+        example: "Putar musik tenang sebelum negosiasi",
+        shortEffect: "Penerimaan pesan meningkat",
+        longEffect: "Preferensi terbentuk tanpa sadar",
+        risk: "Sedang"
+      },
+      {
+        name: "Labeling (Positive Label)",
+        category: "Psikologis Langsung",
+        short: "Memberi label positif agar orang konsisten",
+        actor: "Persuasif, relasional (ENFJ, ESFJ)",
+        target: "Ingin konsisten dengan citra diri",
+        condition: "Pujian spesifik sebelum permintaan",
+        example: "\"Kamu itu orangnya dermawan\" sebelum minta donasi",
+        shortEffect: "Persetujuan meningkat",
+        longEffect: "Citra diri bisa dieksploitasi",
+        risk: "Sedang"
+      },
+
+      // Strategi Bertahap
+      {
+        name: "Foot-in-the-Door",
+        category: "Strategi Bertahap",
+        short: "Mulai dari permintaan kecil dulu",
+        actor: "Persuasif bertahap (ENFP, ESFP)",
+        target: "Ingin konsisten, sulit menolak",
+        condition: "Sudah menyetujui hal kecil",
+        example: "Bantu geser kursi → diminta bersih-bersih",
+        shortEffect: "Terbiasa bilang ya",
+        longEffect: "Permintaan makin besar",
+        risk: "Sedang"
+      },
+      {
+        name: "Door-in-the-Face",
+        category: "Strategi Bertahap",
+        short: "Mulai dari permintaan besar, lalu turunkan",
+        actor: "Negosiator percaya diri (ENTJ, ESTP)",
+        target: "Mudah merasa bersalah, kompromis",
+        condition: "Permintaan awal jelas berlebihan",
+        example: "Pinjam 5 juta → ya sudah 500 ribu",
+        shortEffect: "Permintaan kecil terasa wajar",
+        longEffect: "Reputasi target: sulit menolak",
+        risk: "Sedang"
+      },
+      {
+        name: "Lowball Technique",
+        category: "Strategi Bertahap",
+        short: "Setujukan dulu, baru ungkap biaya tersembunyi",
+        actor: "Penjual/negosiator taktis (ESTJ, ENTJ)",
+        target: "Telah berkomitmen; enggan batal",
+        condition: "Komitmen awal sudah terjadi",
+        example: "Harga awal rendah, biaya tambahan belakangan",
+        shortEffect: "Terikat komitmen",
+        longEffect: "Penyesalan; tetap lanjut demi konsistensi",
+        risk: "Tinggi"
+      },
+      {
+        name: "That’s-Not-All",
+        category: "Strategi Bertahap",
+        short: "Tambah bonus sebelum target merespons",
+        actor: "Pemasar persuasif (ENFP, ESFP, ESTP)",
+        target: "Suka bonus/deal",
+        condition: "Tawaran disempurnakan saat itu juga",
+        example: "Beli ini, bonus itu ditambah diskon!",
+        shortEffect: "Rasa untung meningkat",
+        longEffect: "Standar harapan bonus naik",
+        risk: "Sedang"
+      },
+      {
+        name: "Bait-and-Switch",
+        category: "Strategi Bertahap",
+        short: "Umpan menarik → dialihkan ke opsi lain",
+        actor: "Pemasar agresif (ESTP, ENTP)",
+        target: "Tergiur penawaran awal",
+        condition: "Janji awal tak tersedia; diarahkan ulang",
+        example: "Iklan murah, stok habis → opsi mahal",
+        shortEffect: "Konversi lewat pengalihan",
+        longEffect: "Erosi kepercayaan",
+        risk: "Tinggi"
+      },
+
+      // Sosial & Budaya
+      {
+        name: "Reciprocity Principle",
+        category: "Sosial & Budaya",
+        short: "Memberi dulu agar ada hutang budi",
+        actor: "Ramah, relasional (ESFJ, ENFJ)",
+        target: "Mudah merasa berhutang (ISFJ, ESFJ)",
+        condition: "Baru menerima bantuan/ditraktir",
+        example: "Traktir makan → minta tolong proyek",
+        shortEffect: "Sulit menolak",
+        longEffect: "Siklus balas jasa",
+        risk: "Rendah"
+      },
+      {
+        name: "Social Norm Pressure",
+        category: "Sosial & Budaya",
+        short: "Manfaatkan rasa sungkan & norma",
+        actor: "Tradisional, orientasi kelompok (ISFJ, ESFJ)",
+        target: "Takut dinilai buruk",
+        condition: "Acara keluarga, adat, komunitas kolektif",
+        example: "Nggak sopan nolak undangan",
+        shortEffect: "Kepatuhan sosial",
+        longEffect: "Terikat peran/norma",
+        risk: "Rendah"
+      },
+      {
+        name: "Cultural Conditioning",
+        category: "Sosial & Budaya",
+        short: "Gunakan adat/norma setempat",
+        actor: "Penjaga tradisi (ISFJ, ESTJ)",
+        target: "Patuh norma",
+        condition: "Budaya kolektif, etika sopan santun",
+        example: "Pantang menolak pemberian senior",
+        shortEffect: "Kepatuhan",
+        longEffect: "Pengaruh berulang",
+        risk: "Rendah"
+      },
+      {
+        name: "Relationship Bank Account",
+        category: "Sosial & Budaya",
+        short: "Menabung kebaikan untuk masa depan",
+        actor: "Strategis relasional (INFJ, ENFJ)",
+        target: "Menghargai timbal balik",
+        condition: "Interaksi berulang, hubungan dekat",
+        example: "Banyak membantu → minta hal besar",
+        shortEffect: "Rasa wajib membalas",
+        longEffect: "Siklus hutang budi",
+        risk: "Sedang"
+      },
+
+      // Negosiasi & Harga
+      {
+        name: "Anchoring",
+        category: "Negosiasi & Harga",
+        short: "Angka/standar awal memengaruhi keputusan",
+        actor: "Negosiator strategis (ESTJ, ENTJ)",
+        target: "Butuh patokan, ragu",
+        condition: "Harga/angka awal ditonjolkan",
+        example: "Harga normal 10j → diskon 7j",
+        shortEffect: "Persepsi nilai berubah",
+        longEffect: "Bias keputusan berlanjut",
+        risk: "Sedang"
+      },
+      {
+        name: "Highball/Lowball (Anchoring ekstrem)",
+        category: "Negosiasi & Harga",
+        short: "Tawarkan sangat tinggi/rendah untuk frame",
+        actor: "Negosiator agresif (ENTJ, ESTP)",
+        target: "Kurang info; terkejut angka",
+        condition: "Bargaining awal",
+        example: "Mulai dari harga jauh di atas/bawah",
+        shortEffect: "Geser zona tawar",
+        longEffect: "Kemungkinan penyesalan",
+        risk: "Tinggi"
+      },
+      {
+        name: "Decoy Effect",
+        category: "Negosiasi & Harga",
+        short: "Opsi umpan membuat opsi utama tampak ideal",
+        actor: "Perancang paket cerdik (ENTJ, ENTP)",
+        target: "Bingung oleh banyak opsi",
+        condition: "Ada 3+ pilihan dengan satu inferior",
+        example: "Small 3$, Large 7$, Medium 6.5$ (dekat Large)",
+        shortEffect: "Pilih opsi yang diinginkan pelaku",
+        longEffect: "Arsitektur pilihan bias",
+        risk: "Sedang"
+      },
+
+      // Framing & Perhatian
+      {
+        name: "Framing / Reframing",
+        category: "Framing & Perhatian",
+        short: "Atur sudut pandang situasi",
+        actor: "Kreatif/retoris (ENTP, ENTJ, INTJ)",
+        target: "Belum punya opini kuat",
+        condition: "Kontras narasi, angle positif/negatif",
+        example: "Tekankan manfaat, redam biaya",
+        shortEffect: "Penerimaan frame",
+        longEffect: "Opini terbentuk",
+        risk: "Rendah-Sedang"
+      },
+      {
+        name: "Pre-suasion",
+        category: "Framing & Perhatian",
+        short: "Fokuskan perhatian sebelum pesan utama",
+        actor: "Komunikator strategis (ENFJ, ENTP)",
+        target: "Terarah oleh konteks",
+        condition: "Urutan/setting sebelum ajakan",
+        example: "Pertanyaan pemicu sebelum pitch",
+        shortEffect: "Kesiapan menerima",
+        longEffect: "Bias atensi berulang",
+        risk: "Sedang"
+      },
+      {
+        name: "Contrast Principle",
+        category: "Framing & Perhatian",
+        short: "Bandingkan agar satu opsi tampak unggul",
+        actor: "Persuasif analitis (ENTJ, ENTP)",
+        target: "Perlu perbandingan",
+        condition: "Paparkan urutan opsi berbeda",
+        example: "Tampilkan opsi buruk lebih dulu",
+        shortEffect: "Opsi target tampak ideal",
+        longEffect: "Preferensi terkunci",
+        risk: "Sedang"
+      },
+
+      // Nudge & Arsitektur Pilihan
+      {
+        name: "Default Effect",
+        category: "Nudge & Arsitektur Pilihan",
+        short: "Pilihan default memengaruhi keputusan",
+        actor: "Perancang sistem (INTJ, ISTJ)",
+        target: "Tidak mau repot; heuristik default",
+        condition: "Opsi default ditetapkan",
+        example: "Langganan auto-on kecuali opt-out",
+        shortEffect: "Banyak yang tetap default",
+        longEffect: "Keputusan pasif berlanjut",
+        risk: "Sedang"
+      },
+      {
+        name: "Choice Architecture (Nudge)",
+        category: "Nudge & Arsitektur Pilihan",
+        short: "Susun pilihan agar mendorong opsi tertentu",
+        actor: "Perancang kebijakan/UX (INTJ, ENTP)",
+        target: "Mencari jalan termudah",
+        condition: "Urutan, grouping, salience diatur",
+        example: "Menu sehat ditaruh di depan",
+        shortEffect: "Perilaku terdorong halus",
+        longEffect: "Kebiasaan baru terbentuk",
+        risk: "Rendah-Sedang"
+      },
+
+      // Pemasaran & Urgensi
+      {
+        name: "Scarcity Effect",
+        category: "Pemasaran & Urgensi",
+        short: "Keterbatasan stok/waktu",
+        actor: "Marketing/penjual (ESTP, ENTP)",
+        target: "FOMO; impulsif",
+        condition: "Countdown, stok terbatas",
+        example: "Hanya 2 item tersisa!",
+        shortEffect: "Keputusan cepat",
+        longEffect: "Ketergantungan momen langka",
+        risk: "Sedang"
+      },
+      {
+        name: "Urgency (Deadline)",
+        category: "Pemasaran & Urgensi",
+        short: "Tekankan waktu mepet",
+        actor: "Pemasar/nego cepat (ESTP)",
+        target: "Tidak ingin ketinggalan",
+        condition: "Batas waktu jelas",
+        example: "Diskon berakhir tengah malam",
+        shortEffect: "Aksi segera",
+        longEffect: "Tekanan keputusan berulang",
+        risk: "Sedang"
+      },
+
+      // Opsi terkait komunikasi & rapport
+      {
+        name: "Mirroring / Matching",
+        category: "Psikologis Langsung",
+        short: "Tiru bahasa tubuh/nada bicara",
+        actor: "Empatik/ramah (ENFP, ESFJ)",
+        target: "Ingin merasa nyaman",
+        condition: "Pertemuan tatap muka/online",
+        example: "Selaraskan tempo bicara",
+        shortEffect: "Rapport cepat",
+        longEffect: "Keakraban meningkat",
+        risk: "Rendah"
+      },
+      {
+        name: "Pacing & Leading",
+        category: "Psikologis Langsung",
+        short: "Ikuti ritme target lalu arahkan",
+        actor: "Komunikator terampil (ENFJ, INFJ)",
+        target: "Responsif pada ritme sosial",
+        condition: "Sinkronisasi awal sebelum ajakan",
+        example: "Setuju dulu, lalu ajak langkah baru",
+        shortEffect: "Kepatuhan meningkat",
+        longEffect: "Kepercayaan pada pemimpin",
+        risk: "Sedang"
+      },
+      {
+        name: "Foot-in-the-Mouth",
+        category: "Psikologis Langsung",
+        short: "Hangatkan dengan tanya kabar dulu",
+        actor: "Ramah, service-oriented (ESFJ)",
+        target: "Melembut saat ditanya dengan sopan",
+        condition: "Pembukaan empatik",
+        example: "\"Gimana kabarnya?\" lalu minta dukungan",
+        shortEffect: "Simpati lebih dulu",
+        longEffect: "Kedekatan interaksi",
+        risk: "Rendah"
+      },
+
+      // Otoritas & Bukti Sosial
+      {
+        name: "Authority Bias",
+        category: "Sosial & Budaya",
+        short: "Ikuti perintah figur otoritas",
+        actor: "Dominan/berwibawa (ENTJ, ESTJ)",
+        target: "Patuh/hormat pada struktur",
+        condition: "Hierarki jelas (atasan, orang tua)",
+        example: "\"Atasan yang minta\"",
+        shortEffect: "Kepatuhan",
+        longEffect: "Ketaatan berlebihan",
+        risk: "Sedang"
+      },
+      {
+        name: "Social Proof",
+        category: "Sosial & Budaya",
+        short: "Ikut mayoritas/otoritas sosial",
+        actor: "Sosial/penggerak massa (ESFJ, ENFJ)",
+        target: "Ragu, ingin diterima",
+        condition: "Testimoni, angka, tren",
+        example: "80% orang memilih paket ini",
+        shortEffect: "Konversi naik",
+        longEffect: "Conformity bias",
+        risk: "Rendah-Sedang"
+      },
+
+      // Cerita & Narasi
+      {
+        name: "Storytelling / Narrative Persuasion",
+        category: "Framing & Perhatian",
+        short: "Gunakan cerita untuk mempengaruhi",
+        actor: "Komunikator kreatif (ENFJ, INFJ, ESFP)",
+        target: "Terhubung secara emosional",
+        condition: "Audiens suka kisah/pengalaman",
+        example: "Kisah sukses sebelum ajakan",
+        shortEffect: "Penerimaan meningkat",
+        longEffect: "Nilai/opini terbentuk",
+        risk: "Rendah"
+      },
+    ];
+
+    // Root node builder
+    function buildTree(data, filters={}) {
+      const { category = '', risk = '', query = '' } = filters;
+      const q = query.trim().toLowerCase();
+
+      // Filter items by category & risk & search query across multiple fields
+      const filtered = data.filter(d => {
+        const catOk = !category || d.category === category;
+        const riskOk = !risk || (d.risk && d.risk.toLowerCase().includes(risk.toLowerCase()));
+        const hay = [d.name, d.short, d.actor, d.target, d.condition, d.example, d.category, d.risk, d.shortEffect, d.longEffect]
+          .join(' ').toLowerCase();
+        const queryOk = !q || hay.includes(q);
+        return catOk && riskOk && queryOk;
+      });
+
+      const groups = d3.group(filtered, d => d.category);
+      const children = Array.from(groups, ([key, values]) => ({ name: key, type: 'category', children: values.map(v => ({...v, type: 'tech'})) }))
+        .sort((a,b) => a.name.localeCompare(b.name));
+
+      return { name: 'Teknik Pengaruh Sosial', type: 'root', children };
+    }
+
+    // Color by risk level
+    const riskColor = (r) => {
+      if (!r) return '#94a3b8';
+      const s = r.toLowerCase();
+      if (s.includes('tinggi')) return '#ef4444';
+      if (s.includes('rendah')) return '#10b981';
+      return '#f59e0b'; // sedang / default
+    };
+
+    // Chart setup
+    const chartEl = document.getElementById('chart');
+    const tooltip = document.getElementById('tooltip');
+
+    let width = chartEl.clientWidth;
+    let height = chartEl.clientHeight;
+
+    const svg = d3.select('#chart').append('svg')
+      .attr('width', width)
+      .attr('height', height);
+
+    const g = svg.append('g').attr('transform', 'translate(40,40)');
+
+    const zoom = d3.zoom().scaleExtent([0.4, 3]).on('zoom', (event) => {
+      g.attr('transform', event.transform);
+    });
+    svg.call(zoom);
+
+    let root, tree, link, node;
+
+    function render(filters={}) {
+      width = chartEl.clientWidth; height = chartEl.clientHeight;
+      svg.attr('width', width).attr('height', height);
+
+      const data = buildTree(techniques, filters);
+      root = d3.hierarchy(data);
+      root.x0 = height / 2; root.y0 = 0;
+
+      // Collapse all category children by default
+      root.children?.forEach(c => collapse(c));
+
+      tree = d3.tree().size([height - 80, width - 240]);
+      update(root);
+    }
+
+    function collapse(d) {
+      if (d.children) {
+        d._children = d.children;
+        d._children.forEach(c => collapse(c));
+        d.children = null;
+      }
+    }
+
+    function expand(d) {
+      if (d._children) {
+        d.children = d._children;
+        d._children = null;
+      }
+    }
+
+    function update(source) {
+      // Compute the new tree layout.
+      const treeData = tree(root);
+      const nodes = treeData.descendants();
+      const links = treeData.links();
+
+      nodes.forEach(d => d.y = d.depth * 180);
+
+      // **************** Links ****************
+      link = g.selectAll('path.link').data(links, d => d.target.id || (d.target.id = Math.random()));
+
+      // Enter new links at the parent's previous position.
+      const linkEnter = link.enter().insert('path', 'g')
+        .attr('class', 'link')
+        .attr('stroke', '#94a3b8')
+        .attr('stroke-width', 1.5)
+        .attr('d', d => diagonal({source: source, target: source}));
+
+      // UPDATE
+      const linkUpdate = linkEnter.merge(link);
+
+      // Transition back to the parent element position
+      linkUpdate.transition().duration(300)
+        .attr('d', d => diagonal(d));
+
+      // Remove any exiting links
+      const linkExit = link.exit().transition().duration(300)
+        .attr('d', d => diagonal({source: source, target: source}))
+        .remove();
+
+      // **************** Nodes ****************
+      node = g.selectAll('g.node').data(nodes, d => d.id || (d.id = Math.random()));
+
+      const nodeEnter = node.enter().append('g')
+        .attr('class', 'node')
+        .attr('transform', d => `translate(${source.y0},${source.x0})`)
+        .on('click', (event, d) => {
+          if (d.children) { d._children = d.children; d.children = null; }
+          else { d.children = d._children; d._children = null; }
+          update(d);
+        })
+        .on('mousemove', (event, d) => {
+          if (d.data.type === 'tech') {
+            showTooltip(event, d.data);
+          } else if (d.data.type === 'category') {
+            showTooltip(event, { name: d.data.name, short: 'Kategori' });
+          } else {
+            hideTooltip();
+          }
+        })
+        .on('mouseleave', hideTooltip);
+
+      nodeEnter.append('circle')
+        .attr('r', 1e-6)
+        .attr('fill', d => d.data.type === 'tech' ? riskColor(d.data.risk) : (d.data.type === 'category' ? '#3b82f6' : '#0ea5e9'))
+        .attr('stroke', '#0f172a')
+        .attr('stroke-width', 1.2);
+
+      nodeEnter.append('text')
+        .attr('dy', '.31em')
+        .attr('x', d => d.children || d._children ? -12 : 12)
+        .attr('text-anchor', d => d.children || d._children ? 'end' : 'start')
+        .attr('class', 'text-sm')
+        .text(d => d.data.name)
+        .style('fill-opacity', 1e-6);
+
+      // UPDATE
+      const nodeUpdate = nodeEnter.merge(node);
+
+      nodeUpdate.transition().duration(300)
+        .attr('transform', d => `translate(${d.y},${d.x})`);
+
+      nodeUpdate.select('circle').transition().duration(300)
+        .attr('r', d => d.data.type === 'tech' ? 7 : 8);
+
+      nodeUpdate.select('text').transition().duration(300)
+        .style('fill-opacity', 1)
+        .attr('x', d => d.children || d._children ? -12 : 12)
+        .attr('text-anchor', d => d.children || d._children ? 'end' : 'start');
+
+      // Remove any exiting nodes
+      const nodeExit = node.exit().transition().duration(300)
+        .attr('transform', d => `translate(${source.y},${source.x})`)
+        .remove();
+
+      nodeExit.select('circle').attr('r', 1e-6);
+      nodeExit.select('text').style('fill-opacity', 1e-6);
+
+      // Stash the old positions for transition.
+      nodes.forEach(d => { d.x0 = d.x; d.y0 = d.y; });
+    }
+
+    function diagonal(d) {
+      return `M ${d.source.y},${d.source.x}
+              C ${(d.source.y + d.target.y) / 2},${d.source.x}
+                ${(d.source.y + d.target.y) / 2},${d.target.x}
+                ${d.target.y},${d.target.x}`;
+    }
+
+    function showTooltip(event, data) {
+      const html = `
+        <div class="text-xs">
+          <div class="font-semibold text-slate-800 mb-1">${data.name}</div>
+          ${data.category ? `<div class="mb-1"><span class="badge bg-slate-100 border">${data.category}</span></div>` : ''}
+          ${data.short ? `<div class="mb-1 text-slate-700">${data.short}</div>` : ''}
+          ${data.actor ? `<div class="mt-1"><span class="font-semibold">Pelaku:</span> ${data.actor}</div>` : ''}
+          ${data.target ? `<div><span class="font-semibold">Korban/Target:</span> ${data.target}</div>` : ''}
+          ${data.condition ? `<div><span class="font-semibold">Kondisi:</span> ${data.condition}</div>` : ''}
+          ${data.example ? `<div><span class="font-semibold">Contoh:</span> ${data.example}</div>` : ''}
+          ${data.shortEffect ? `<div><span class="font-semibold">Efek cepat:</span> ${data.shortEffect}</div>` : ''}
+          ${data.longEffect ? `<div><span class="font-semibold">Efek jangka panjang:</span> ${data.longEffect}</div>` : ''}
+          ${data.risk ? `<div class="mt-1"><span class="font-semibold">Etika/Risiko:</span> <span class="badge" style="background:${riskColor(data.risk)}; color:white">${data.risk}</span></div>` : ''}
+        </div>`;
+
+      tooltip.innerHTML = html;
+      tooltip.classList.remove('hidden');
+      const { pageX, pageY } = event;
+      tooltip.style.left = (pageX + 12) + 'px';
+      tooltip.style.top  = (pageY + 12) + 'px';
+    }
+
+    function hideTooltip() {
+      tooltip.classList.add('hidden');
+    }
+
+    // Controls handlers
+    const searchInput = document.getElementById('search');
+    const categoryFilter = document.getElementById('categoryFilter');
+    const riskFilter = document.getElementById('riskFilter');
+    const resetBtn = document.getElementById('resetBtn');
+    const expandAllBtn = document.getElementById('expandAllBtn');
+    const collapseAllBtn = document.getElementById('collapseAllBtn');
+
+    function applyFilters() {
+      const filters = {
+        category: categoryFilter.value,
+        risk: riskFilter.value,
+        query: searchInput.value
+      };
+      g.selectAll('*').remove();
+      render(filters);
+      // auto-expand all categories if search is active
+      if (filters.query.trim()) {
+        // expand categories
+        root.children?.forEach(c => expand(c));
+        update(root);
+      }
+    }
+
+    searchInput.addEventListener('input', debounce(applyFilters, 250));
+    categoryFilter.addEventListener('change', applyFilters);
+    riskFilter.addEventListener('change', applyFilters);
+
+    resetBtn.addEventListener('click', () => {
+      searchInput.value = '';
+      categoryFilter.value = '';
+      riskFilter.value = '';
+      svg.transition().duration(200).call(zoom.transform, d3.zoomIdentity);
+      applyFilters();
+    });
+
+    expandAllBtn.addEventListener('click', () => {
+      root.children?.forEach(c => expandRecursive(c));
+      update(root);
+    });
+
+    collapseAllBtn.addEventListener('click', () => {
+      root.children?.forEach(c => collapse(c));
+      update(root);
+    });
+
+    function expandRecursive(d) { expand(d); (d.children||[]).forEach(expandRecursive); }
+
+    function debounce(fn, wait=300) {
+      let t; return (...args) => { clearTimeout(t); t = setTimeout(() => fn.apply(this,args), wait); };
+    }
+
+    // Initial render
+    render();
+
+    // Responsive
+    addEventListener('resize', debounce(() => { applyFilters(); }, 200));
+  </script>
+</body>
+</html>
